@@ -1,0 +1,102 @@
+// /* main.css */
+
+
+// .primary-text{
+//     color: #c89901 !important;
+// }
+// .ternary{
+//     color: deeppink;
+// }
+
+// breakpoint variable, from https://quasar.dev/style/breakpoints
+// Except the xs one because I think 600px is too small
+// $xs-breakpoint: 718px;
+// $sm-breakpoint: 1024px;
+$md-breakpoint: 1439px;
+$lg-breakpoint: 1920px;
+$xl-breakpoint: 1920px;
+// .container,
+// .container-sm,
+// .container-md,
+// .container-lg,
+// .container-xl {
+//   width: 100%;
+//   margin-right: auto;
+//   margin-left: auto;
+// }
+
+// @media (min-width: $xs-breakpoint) {
+//   .container,
+//   .container-sm {
+//     max-width: 540px;
+//   }
+// }
+
+// @media (min-width: $sm-breakpoint) {
+//   .container,
+//   .container-sm,
+//   .container-md {
+//     max-width: 920px;
+//   }
+// }
+
+// @media (min-width: $md-breakpoint) {
+//   .container,
+//   .container-sm,
+//   .container-md,
+//   .container-lg {
+//     max-width: 1920px;
+//   }
+// }
+// @media (min-width: $lg-breakpoint) {
+//   .container,
+//   .container-sm,
+//   .container-md,
+//   .container-lg {
+//     max-width: 1920px;
+//   }
+// }
+
+@media (min-width: $lg-breakpoint) {
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-xl {
+    max-width: 2439px;
+    margin: 0 auto;
+  }
+}
+
+.q-item.q-router-link--active, .q-item--active {
+  color: #2E5F9A;
+}
+
+.q-item__section--side .q-icon{
+  color: #2E5F9A !important
+}
+  
+
+$breakpoint-lg-max:1500px;
+
+.text-underline-select{
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.desktop-right-absolute {
+  overflow-y: auto;
+  max-height: 100vh;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.desktop-right-absolute::-webkit-scrollbar {
+  display: none;
+}
+
+
+.thumbnail{
+  cursor: pointer;
+}
+// sizes="(max-width: 768px) 233px, 534px"

@@ -1,0 +1,28 @@
+{
+  // https://nuxt.com/docs/guide/concepts/typescript
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false,
+    "types": [
+      "vite/client"
+    ],
+    "paths": {
+      "@/*": [
+        "*"
+      ],
+      "~/openapi/*": [
+        "openapi/*"
+      ]
+    },
+    "experimentalDecorators": true
+  },
+  "include": [
+    "**/*.vue",
+    "**/*.ts",
+    ".nuxt/nuxt.d.ts",
+  ],
+}

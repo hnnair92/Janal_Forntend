@@ -100,6 +100,25 @@ export class IdentityService {
         });
     }
     /**
+     * @param code
+     * @param data
+     * @returns User
+     * @throws ApiError
+     */
+    public static identityAccountsRegisterUpdatePartialUpdate(
+        code: string,
+        data: User,
+    ): CancelablePromise<User> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/identity/accounts/register/update/{code}/',
+            path: {
+                'code': code,
+            },
+            body: data,
+        });
+    }
+    /**
      * @param data
      * @returns UserEmail
      * @throws ApiError

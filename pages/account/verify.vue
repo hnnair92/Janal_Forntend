@@ -144,7 +144,8 @@ export class VerifyRegisterPage extends Vue {
   password = "";
   passwordRepeat = "";
   invalidMessage = "";
-
+  verificationResponse: UserEmail = <UserEmail>{};
+  update: boolean | undefined = false;
   // @ts-ignore
   @Setup((props, ctx) =>
     useHead({
@@ -166,9 +167,12 @@ export class VerifyRegisterPage extends Vue {
     }
     this.loading = true;
     IdentityService.identityAccountsEmailVerifyList(email, code)
-      .then(() => {
-        this.identityVerified = true;
-        this.registerUser.email = email;
+      .then((res: UserEmail) => {
+        if (res.valid) {
+          this.identityVerified = true;
+          this.registerUser.email = email;
+        }
+        this.verificationResponse = res;
       })
       .catch((error: ApiError) => {
         if (error.status == 400) {
@@ -199,30 +203,58 @@ export class VerifyRegisterPage extends Vue {
     this.regLoading = true;
     this.registerUser.name = this.firstName + " " + this.lastName;
     this.registerUser.password = this.password;
-
-    IdentityService.identityAccountsRegisterCreate(this.registerUser)
-      .then((res: User) => {
-        this.regLoading = false;
-        this.$q.notify({
-          message:
-            "User registration successful! Please login with email and password",
-          color: "green",
-          position: "top",
-          classes: "text-body1",
-        });
-        this.$router.push("/account/login");
-      })
-      .catch((err: ApiError) => {
-        this.regLoading = false;
-        if (err.status == 400) {
+    if (this.verificationResponse.update) {
+      IdentityService.identityAccountsRegisterUpdatePartialUpdate(
+        this.verificationResponse.code,
+        this.registerUser
+      )
+        .then((res: User) => {
+          this.regLoading = false;
           this.$q.notify({
-            message: "Please fill all the required fields",
-            color: "red",
+            message:
+              "User registration successful! Please login with email and password",
+            color: "green",
             position: "top",
             classes: "text-body1",
           });
-        }
-      });
+          this.$router.push("/account/login");
+        })
+        .catch((err: ApiError) => {
+          this.regLoading = false;
+          if (err.status == 400) {
+            this.$q.notify({
+              message: "Failed to update user",
+              color: "red",
+              position: "top",
+              classes: "text-body1",
+            });
+          }
+        });
+    } else {
+      IdentityService.identityAccountsRegisterCreate(this.registerUser)
+        .then((res: User) => {
+          this.regLoading = false;
+          this.$q.notify({
+            message:
+              "User registration successful! Please login with email and password",
+            color: "green",
+            position: "top",
+            classes: "text-body1",
+          });
+          this.$router.push("/account/login");
+        })
+        .catch((err: ApiError) => {
+          this.regLoading = false;
+          if (err.status == 400) {
+            this.$q.notify({
+              message: "Please fill all the required fields",
+              color: "red",
+              position: "top",
+              classes: "text-body1",
+            });
+          }
+        });
+    }
   }
 
   passwordValidator(value: any) {

@@ -216,16 +216,24 @@
           </q-card-section> -->
         </q-card>
         <div class="full-width justify-between row q-pa-md">
-          <div class="q-mb-sm">
+          <div class="q-mb-sm row">
+            <UpdatePassword v-if="currentUser" class="q-pl-sm" />
             <q-btn
+              v-else
               color="secondary"
               size="md"
               unelevated
               @click="confirm = true"
               class="q-mr-md"
-              ><q-icon name="password" class="q-pr-sm" /> Reset Password
+              ><q-icon name="password" class="q-pr-sm" />
+              Reset Password
             </q-btn>
-            <q-btn color="red" size="md" unelevated @click="alert = true"
+            <q-btn
+              color="red"
+              size="md"
+              unelevated
+              @click="alert = true"
+              v-if="!currentUser"
               ><q-icon name="warning" class="q-pr-sm" /> Delete User</q-btn
             >
 
@@ -342,9 +350,10 @@ import {
   ProvincesService,
 } from "@/openapi/";
 import AddressCard from "@/components/customer/checkout/AddressCard.vue";
+import UpdatePassword from "@/components/customer/dashboard/UpdatePassword.vue";
 @Component({
   name: "UserDetails",
-  components: { AddressCard },
+  components: { AddressCard, UpdatePassword },
 })
 export class UserDetails extends Vue {
   @Prop() userId!: number;
@@ -361,6 +370,13 @@ export class UserDetails extends Vue {
   showAddressDialog = false;
   activeAddress: Address | null = null;
 
+  get currentUser() {
+    const { status, data } = useAuthState();
+    if (data && data.value && data.value.id && data.value.id == this.userId) {
+      return true;
+    }
+    return false;
+  }
   // Add address from admin user
   addAddress() {
     this.showAddressDialog = true;

@@ -4,5 +4,8 @@
 /* eslint-disable */
 export type UserEmail = {
     email: string;
+    valid?: boolean;
+    update?: boolean;
+    code: string;
 };
 

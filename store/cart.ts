@@ -96,11 +96,6 @@ const cartDiscountTotal = (): number => {
   return Math.round(totalDiscount * 100) / 100;
 };
 
-const cartItemTax = (): number => {
-  let totalTax= (cartItemTotal()+ cartAddOnsTotal()-cartDiscountTotal())*.135
-  return Math.round(totalTax * 100) / 100;
-};
-
 const totalCartQuantity = (): number => {
   let totalQuantity = 0;
   if (state.cartItems && state.cartItems.length) {
@@ -122,4 +117,4 @@ const initializeCart = (): void => {
   }
 };
 
-export { state, addToCart, removeFromCart, clearCart,updateCartItem, cartItemTotal,cartItemTax,totalCartQuantity,initializeCart, updateQuantity,cartAddOnsTotal,cartDiscountTotal};
+export { state, addToCart, removeFromCart, clearCart,updateCartItem, cartItemTotal,totalCartQuantity,initializeCart, updateQuantity,cartAddOnsTotal,cartDiscountTotal};

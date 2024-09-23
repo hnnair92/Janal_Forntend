@@ -1,7 +1,7 @@
 <template>
   <div
     class="q-d-flex q-flex-grow-1 q-pa-sm"
-    :class="{ 'q-pa-lg': $q.platform.is.desktop }"
+    :class="{ 'q-pa-sm': $q.platform.is.desktop }"
     v-if="promotionList && promotionList.length"
   >
     <q-carousel

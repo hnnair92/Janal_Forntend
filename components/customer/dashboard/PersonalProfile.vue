@@ -100,14 +100,13 @@ export class PersonalProfile extends Vue {
 
   mounted() {
     const { data } = useAuth();
-    this.email = data.value.email;
-
-    const name = data.value.name.split(" ");
-    this.first_name = name[0];
-    this.last_name = name[name.length - 1];
-
-    this.initialFirstName = this.first_name;
-    this.initialLastName = this.last_name;
+    if (data.value) {
+      this.email = data.value.email;
+      this.first_name = data.value.first_name;
+      this.last_name = data.value.last_name;
+      this.initialFirstName = this.first_name;
+      this.initialLastName = this.last_name;
+    }
   }
 }
 export default toNative(PersonalProfile);

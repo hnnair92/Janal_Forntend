@@ -201,9 +201,10 @@ export class VerifyRegisterPage extends Vue {
       return;
     }
     this.regLoading = true;
-    this.registerUser.name = this.firstName + " " + this.lastName;
+    this.registerUser.first_name = this.firstName;
+    this.registerUser.last_name = this.lastName;
     this.registerUser.password = this.password;
-    if (this.verificationResponse.update) {
+    if (this.verificationResponse.update && this.verificationResponse.code) {
       IdentityService.identityAccountsRegisterUpdatePartialUpdate(
         this.verificationResponse.code,
         this.registerUser

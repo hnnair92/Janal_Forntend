@@ -5,7 +5,9 @@
 export type User = {
     readonly id?: number;
     email: string;
-    name: string;
+    readonly name?: string;
     password: string;
+    first_name?: string | null;
+    last_name?: string | null;
 };
 

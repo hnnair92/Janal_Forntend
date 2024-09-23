@@ -12,10 +12,11 @@ export type Promotion = {
     readonly uuid?: string;
     description?: string | null;
     discount_percentage: string;
-    start_date: string;
-    end_date: string;
+    start_date?: string | null;
+    end_date?: string | null;
     is_enabled?: boolean;
     readonly created_on?: string | null;
+    permanent_banner?: boolean;
     products?: Array<number>;
 };
 

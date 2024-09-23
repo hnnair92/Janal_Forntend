@@ -29,10 +29,10 @@
             <span v-else>{{ provinceName(address.province) }}</span>
             {{ address.postal_code }}
           </div>
-          <div class="text-body1 q-pb-sm">
+          <div class="text-body1 q-pb-sm" v-if="!hideFields">
             <q-icon name="phone" class="q-mr-sm" /> {{ address.phone_number }}
           </div>
-          <div class="text-body1 q-pb-sm">
+          <div class="text-body1 q-pb-sm" v-if="!hideFields">
             <q-icon name="mail" class="q-mr-sm" /> {{ address.email }}
           </div>
         </q-card-section>
@@ -178,7 +178,7 @@
         </div>
       </div>
 
-      <div class="row q-pa-sm">
+      <div class="row q-pa-sm" v-if="!hideFields">
         <div class="col">
           <label class="text-weight-medium q-px-md"
             >Phone Number <span class="text-red">*</span></label
@@ -198,7 +198,7 @@
           />
         </div>
       </div>
-      <div class="row q-pa-sm">
+      <div class="row q-pa-sm" v-if="!hideFields">
         <div class="col">
           <label class="text-weight-medium q-px-md"
             >Email <span class="text-red">*</span></label
@@ -257,6 +257,7 @@ export class AddressCard extends Vue {
   @Prop() provinceList: Array<Province>;
   @Prop({ default: false }) showAddressTypes: boolean;
   @Prop() editMode: boolean;
+  @Prop({ default: false }) hideFields: boolean;
   edit = false;
   addressTypes: any = [];
   addressTypeOptions = [] as { label: string; value: Address.address_type }[];
@@ -320,8 +321,14 @@ export class AddressCard extends Vue {
       (this as any).$refs.provinceRef.validate();
       (this as any).$refs.postCodeRef.validate();
       (this as any).$refs.cityRef.validate();
-      (this as any).$refs.phoneNumberRef.validate();
-      (this as any).$refs.emailRef.validate();
+      const emailPhone = false;
+      if (!this.hideFields) {
+        (this as any).$refs.phoneNumberRef.validate();
+        (this as any).$refs.emailRef.validate();
+        const emailPhone =
+          (this as any).$refs.phoneNumberRef.hasError ||
+          (this as any).$refs.emailRef.hasError;
+      }
 
       return !(
         (this as any).$refs.firstNameRef.hasError ||
@@ -330,8 +337,7 @@ export class AddressCard extends Vue {
         (this as any).$refs.provinceRef.hasError ||
         (this as any).$refs.postCodeRef.hasError ||
         (this as any).$refs.cityRef.hasError ||
-        (this as any).$refs.phoneNumberRef.hasError ||
-        (this as any).$refs.emailRef.hasError
+        emailPhone
       );
     } else if (this.address && this.address.id) {
       return true;

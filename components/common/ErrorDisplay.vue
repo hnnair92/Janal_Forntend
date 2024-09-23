@@ -1,41 +1,50 @@
 <template>
-  <div v-if="errors">
-    <ul>
-      <li
-        class="text-red"
-        v-for="(message, fieldName) in formattedErrors"
-        :key="fieldName"
-      >
-        {{ fieldName }}: {{ message.join(", ") }}
-      </li>
-    </ul>
-  </div>
+  <q-banner v-if="hasErrors" color="negative" class="text-red">
+    <div v-for="(messages, key) in errorMessages" :key="key">
+      <span v-if="typeof messages === 'string'">
+        <strong>{{ key }}:</strong> {{ messages }}
+      </span>
+      <span v-else-if="Array.isArray(messages)">
+        <strong>{{ key }}: </strong>
+        <span v-if="messages.length === 1">
+          {{ messages[0] }}
+          <!-- Display single item inline -->
+        </span>
+        <span v-else>
+          <ul>
+            <li v-for="(item, idx) in messages" :key="idx">{{ item }}</li>
+          </ul>
+        </span>
+      </span>
+      <span v-else-if="typeof messages === 'object'">
+        <span v-for="(value, nestedKey) in messages" :key="nestedKey">
+          <strong>{{ nestedKey }}:</strong>
+          <ul>
+            <li v-for="(item, idx) in value" :key="idx">{{ item }}</li>
+          </ul>
+        </span>
+      </span>
+    </div>
+  </q-banner>
 </template>
 
-<script lang="ts">
-import { Component, Vue, Prop } from "vue-facing-decorator";
-
-@Component
-export default class ErrorDisplay extends Vue {
-  @Prop({ type: Object, default: () => null }) readonly errors!: Record<
-    string,
-    string[]
-  > | null;
-
-  get formattedErrors(): Record<string, string[]> {
-    if (this.errors && typeof this.errors === "object") {
-      return this.errors;
-    }
-    return {};
-  }
-}
+<script>
+export default {
+  props: {
+    errorResponse: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+  computed: {
+    errorMessages() {
+      return this.errorResponse || {};
+    },
+    hasErrors() {
+      return Object.keys(this.errorMessages).length > 0;
+    },
+  },
+};
 </script>
 
-<style scoped>
-.error-display {
-  color: red;
-  background-color: #fdd;
-  padding: 10px;
-  border-radius: 4px;
-}
-</style>
+<style scoped></style>

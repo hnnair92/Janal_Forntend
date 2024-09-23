@@ -185,6 +185,7 @@
           @click="openDownloadLink"
         />
         <q-btn
+          v-if="orderInfo.tracking_id"
           color="blue"
           icon="local_shipping"
           label="View Tracking Information"

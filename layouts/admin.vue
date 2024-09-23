@@ -257,6 +257,11 @@ export default {
           text: "Utilities",
           link: "/pages-admin/utilities/payment-settings/",
         },
+        {
+          icon: "assured_workload",
+          text: "Tax Settings",
+          link: "/pages-admin/utilities/tax-settings/",
+        },
       ],
     };
   },

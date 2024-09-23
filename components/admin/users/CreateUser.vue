@@ -145,7 +145,6 @@ export class UserDetails extends Vue {
       });
       return;
     }
-    this.user.name = this.user.first_name + " " + this.user.last_name;
     this.loading = true;
     UsersService.usersCreate(this.user)
       .then((res) => {

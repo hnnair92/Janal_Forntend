@@ -8,7 +8,6 @@ import {
   initializeCart,
   cartAddOnsTotal,
   state as cartItems,
-  cartItemTax,
   cartItemTotal,
 } from "@/store/cart";
 import { Order, PublicService } from "@/openapi";
@@ -25,9 +24,6 @@ export class flow extends Vue {
   }
   get cartItemsTotal() {
     return cartItemTotal();
-  }
-  get cartItemTax() {
-    return cartItemTax();
   }
   get cartAddOnsTotal() {
     return cartAddOnsTotal();
@@ -59,13 +55,10 @@ export class flow extends Vue {
   checkout() {
     console.log("checkout", this.cartItems);
     let total: number = this.cartItemsTotal;
-    let tax: number = this.cartItemTax;
     const addOnTotal: number = this.cartAddOnsTotal;
-    console.log(total, tax, addOnTotal);
-    if (this.cartItems && total && tax) {
+    if (this.cartItems && total) {
       let order: Order = <Order>{
         items: this.cartItems.cartItems,
-        tax: tax.toString(),
         sale_total: total.toString(),
         add_on_total: addOnTotal.toString(),
       };

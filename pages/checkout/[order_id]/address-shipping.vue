@@ -101,6 +101,7 @@
                   :address.sync="order.billing_address"
                   :provinceList.sync="provinces"
                   @validation-status="updateBillingStatus"
+                  hideFields="true"
                 />
                 <q-stepper-navigation class="text-right q-mx-lg">
                   <q-btn
@@ -250,27 +251,30 @@
                 </div>
                 <q-separator class="q-mb-sm" />
                 <div class="row q-pa-sm text-body1">
-                  <div class="col-8">Total Quantity</div>
-                  <div class="col-2">{{ quantity }}</div>
+                  <div class="col-6">Total Quantity</div>
+                  <div class="col-">{{ quantity }}</div>
                 </div>
                 <div class="row q-pa-sm text-body1">
-                  <div class="col-8">Total Price</div>
-                  <div class="col-2">${{ prices }}</div>
+                  <div class="col-6">Total Price</div>
+                  <div class="col-4">${{ prices }}</div>
                 </div>
                 <div class="row q-pa-sm text-body1" v-if="addOnsTotal">
-                  <div class="col-8">Total Add-on</div>
-                  <div class="col-2">${{ addOnsTotal.toFixed(2) }}</div>
+                  <div class="col-6">Total Add-on</div>
+                  <div class="col-4">${{ addOnsTotal.toFixed(2) }}</div>
                 </div>
                 <div class="row q-pa-sm text-red text-body1" v-if="discount">
-                  <div class="col-8">Discount</div>
+                  <div class="col-6">Discount</div>
                   <div class="col-4">-${{ discount.toFixed(2) }}</div>
                 </div>
                 <div class="row q-pa-sm text-body1">
-                  <div class="col-8">Tax</div>
-                  <div class="col-2">${{ tax }}</div>
+                  <div class="col-6">Tax</div>
+                  <div class="col-4">
+                    <span v-if="!order.tax">Calculated at checkout</span>
+                    <span v-else>${{ order.tax }}</span>
+                  </div>
                 </div>
                 <div class="row q-pa-sm text-body1">
-                  <div class="col-8">Shipping</div>
+                  <div class="col-6">Shipping</div>
                   <div class="col-2" v-if="order.shipping_charge == 0">
                     Free
                   </div>
@@ -278,8 +282,8 @@
                 </div>
                 <q-separator />
                 <div class="row text-h6 primary-text q-pa-md">
-                  <div class="col-8">Final Amount</div>
-                  <div class="col-2">${{ total.toFixed(2) }}</div>
+                  <div class="col-6">Final Amount</div>
+                  <div class="col-4">${{ total.toFixed(2) }}</div>
                 </div>
               </div>
               <div>
@@ -353,7 +357,6 @@ import {
   initializeCart,
   cartItemTotal,
   clearCart,
-  cartItemTax,
   state as cartItems,
   totalCartQuantity,
   cartAddOnsTotal,
@@ -418,10 +421,16 @@ export class AddressShippingPage extends Vue {
     }
   }
   get addOnsTotal() {
-    return cartAddOnsTotal();
+    if (this.order && this.order.add_on_total) {
+      return parseFloat(this.order.add_on_total);
+    }
+    return 0;
   }
   get discount() {
-    return cartDiscountTotal();
+    if (this.order && this.order.discount_total) {
+      return parseFloat(this.order.discount_total);
+    }
+    return 0;
   }
   get cartItems() {
     return cartItems;
@@ -445,7 +454,10 @@ export class AddressShippingPage extends Vue {
     return total;
   }
   get tax() {
-    return cartItemTax();
+    if (this.order && this.order.tax) {
+      return parseFloat(this.order.tax);
+    }
+    return 0;
   }
 
   updateShippingStatus(isValid: boolean) {
@@ -557,6 +569,8 @@ export class AddressShippingPage extends Vue {
             this.order.billing_address = <Address>{
               address_type: Address.address_type.BILLING,
               is_default: true,
+              email: this.order.shipping_address?.email,
+              phone_number: this.order.shipping_address?.phone_number,
             };
           }
         })

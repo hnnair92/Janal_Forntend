@@ -107,11 +107,11 @@
     <q-dialog v-model="showDeleteDialog">
       <q-card>
         <q-card-section>
-          <q-card-title class="text-bold">Confirm Delete!</q-card-title>
+          <div class="text-bold">Confirm Delete!</div
           <br />
-          <q-card-text>
+          <div>
             Are you sure you want to delete this enquiry?
-          </q-card-text>
+          </div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn label="Cancel" color="secondary" flat @click="cancelDelete" />

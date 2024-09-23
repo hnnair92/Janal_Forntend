@@ -296,7 +296,6 @@ import {
   removeFromCart,
   cartItemTotal,
   updateCartItem,
-  cartItemTax,
   cartAddOnsTotal,
   cartDiscountTotal,
   state as cartItems,
@@ -366,10 +365,6 @@ export class PublicCart extends Vue {
 
   get total() {
     return this.subTotal - this.discount;
-  }
-
-  get tax() {
-    return cartItemTax();
   }
 
   goToCheckout() {

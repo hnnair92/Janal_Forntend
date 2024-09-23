@@ -7,9 +7,8 @@ export type AllFieldsUser = {
     readonly id?: number;
     address?: Array<Address> | null;
     last_login?: string | null;
-    first_name?: string;
-    last_name?: string;
-    name: string;
+    first_name?: string | null;
+    last_name?: string | null;
     email: string;
     readonly date_joined?: string;
     is_admin?: boolean;

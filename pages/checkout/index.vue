@@ -100,12 +100,7 @@
 
 <script lang="ts">
 import { Component, Vue, Setup, toNative } from "vue-facing-decorator";
-import {
-  cartAddOnsTotal,
-  state as cartItems,
-  cartItemTax,
-  cartItemTotal,
-} from "@/store/cart";
+import { state as cartItems } from "@/store/cart";
 import { OpenAPI, Order, PublicService } from "@/openapi";
 @Component({
   name: "CheckoutPage",

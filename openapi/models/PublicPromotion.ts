@@ -9,7 +9,7 @@ export type PublicPromotion = {
     name: string;
     description?: string | null;
     banner_image_long?: UploadedImages;
-    end_date: string;
+    end_date?: string | null;
     banner_image_mobile?: UploadedImages;
 };
 

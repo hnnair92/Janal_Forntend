@@ -16,6 +16,7 @@ export type CustomerOrder = {
     customer_order_id?: string | null;
     sale_total?: string | null;
     add_on_total?: string | null;
+    discount_total?: string | null;
     tax?: string | null;
     shipping_charge?: number;
     paid?: boolean;

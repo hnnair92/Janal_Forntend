@@ -101,8 +101,11 @@ export class PersonalProfile extends Vue {
   mounted() {
     const { data } = useAuth();
     if (data.value) {
+      // @ts-ignore
       this.email = data.value.email;
+      // @ts-ignore
       this.first_name = data.value.first_name;
+      // @ts-ignore
       this.last_name = data.value.last_name;
       this.initialFirstName = this.first_name;
       this.initialLastName = this.last_name;

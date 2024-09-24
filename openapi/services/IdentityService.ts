@@ -7,6 +7,7 @@ import type { TokenObtainPair } from '../models/TokenObtainPair';
 import type { TokenRefresh } from '../models/TokenRefresh';
 import type { User } from '../models/User';
 import type { UserEmail } from '../models/UserEmail';
+import type { UserEmailCode } from '../models/UserEmailCode';
 import type { UserEmailResponse } from '../models/UserEmailResponse';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -15,13 +16,13 @@ export class IdentityService {
     /**
      * @param email email
      * @param code verification code
-     * @returns UserEmail
+     * @returns UserEmailCode
      * @throws ApiError
      */
     public static identityAccountsEmailVerifyList(
         email?: string,
         code?: string,
-    ): CancelablePromise<UserEmail> {
+    ): CancelablePromise<UserEmailCode> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/identity/accounts/email/verify',
@@ -91,7 +92,7 @@ export class IdentityService {
      * @throws ApiError
      */
     public static identityAccountsRegisterEmailCreate(
-        data: UserEmail,
+        data: UserEmailCode,
     ): CancelablePromise<UserEmailResponse> {
         return __request(OpenAPI, {
             method: 'POST',

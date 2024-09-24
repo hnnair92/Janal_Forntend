@@ -6,6 +6,7 @@ import type { Address } from './Address';
 export type AllFieldsUser = {
     readonly id?: number;
     address?: Array<Address> | null;
+    readonly name?: string;
     last_login?: string | null;
     first_name?: string | null;
     last_name?: string | null;

@@ -119,6 +119,7 @@ import {
   IdentityService,
   User,
   UserEmail,
+  UserEmailCode,
   UserEmailResponse,
 } from "@/openapi";
 import Loading from "@/components/public/Loading.vue";
@@ -144,7 +145,7 @@ export class VerifyRegisterPage extends Vue {
   password = "";
   passwordRepeat = "";
   invalidMessage = "";
-  verificationResponse: UserEmail = <UserEmail>{};
+  verificationResponse: UserEmailCode = <UserEmailCode>{};
   update: boolean | undefined = false;
   // @ts-ignore
   @Setup((props, ctx) =>
@@ -167,7 +168,7 @@ export class VerifyRegisterPage extends Vue {
     }
     this.loading = true;
     IdentityService.identityAccountsEmailVerifyList(email, code)
-      .then((res: UserEmail) => {
+      .then((res: UserEmailCode) => {
         if (res.valid) {
           this.identityVerified = true;
           this.registerUser.email = email;

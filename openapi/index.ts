@@ -57,6 +57,7 @@ export type { TokenRefresh } from './models/TokenRefresh';
 export type { UploadedImages } from './models/UploadedImages';
 export type { User } from './models/User';
 export type { UserEmail } from './models/UserEmail';
+export type { UserEmailCode } from './models/UserEmailCode';
 export type { UserEmailResponse } from './models/UserEmailResponse';
 export type { Wishlist } from './models/Wishlist';
 

@@ -11,7 +11,7 @@
       >
     </div>
     <div class="full-width row q-pa-md">
-      <div class="col-10">
+      <div class="col-8">
         <label class="text-secondary">You can search by name or email.</label>
         <q-input
           v-model="searchText"
@@ -23,7 +23,7 @@
           @change="resetPagination"
         />
       </div>
-      <div class="col-1 q-mt-lg q-px-sm">
+      <div class="col-2 q-mt-lg q-px-xs">
         <q-btn
           color="secondary"
           icon="search"
@@ -33,12 +33,13 @@
           @click="resetPagination"
         />
       </div>
-      <div class="col-1 q-mt-lg q-px-sm">
+      <div class="col-2 q-mt-lg q-px-xs">
         <q-btn
           color="grey"
           icon="refresh"
           label="Reset"
           unelevated
+          size="md"
           class="q-ml-sm full-width"
           @click="resetFilter"
         />
@@ -135,7 +136,7 @@ export class UserTable extends Vue {
       field: "last_login",
       align: "left",
       format: (val: any) => {
-        return new Date(val).toLocaleString();
+        return val ? new Date(val).toLocaleString() : "Not Available";
       },
     },
     {

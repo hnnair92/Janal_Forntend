@@ -9,6 +9,12 @@
       animated
       v-model="slide"
       infinite
+      :autoplay="autoplay"
+      arrows
+      transition-prev="slide-right"
+      transition-next="slide-left"
+      @mouseenter="autoplay = false"
+      @mouseleave="autoplay = true"
       :height="$q.platform.is.desktop ? '500px' : '250px'"
     >
       <q-carousel-slide
@@ -26,16 +32,6 @@
             "
             ratio="1"
             fit="cover"
-          />
-        </div>
-        <div class="absolute-bottom custom-caption">
-          <!-- <div class="text-h2">{{ image.name }}</div> -->
-          <q-btn
-            class="q-mt-md text-bold primary"
-            label="Shop Now"
-            unelevated
-            outline
-            size="lg"
             @click="loadProduct(image.uuid)"
           />
         </div>
@@ -74,6 +70,7 @@ import { Component, Vue, Watch, toNative } from "vue-facing-decorator";
 })
 export class PublicPromotions extends Vue {
   slide = 0;
+  autoplay = true;
   promotionList: Array<PublicPromotion> = Array<PublicPromotion>();
   created() {
     this.loadData();
@@ -86,7 +83,7 @@ export class PublicPromotions extends Vue {
       }
     });
   }
-  loadProduct(promotion_uuid: string) {
+  loadProduct(promotion_uuid: any) {
     this.$router.push(`/categories/All_Products?campaign=${promotion_uuid}`);
   }
 }

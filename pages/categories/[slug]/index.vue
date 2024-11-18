@@ -11,10 +11,10 @@
         :to="`/categories/${$route.params.slug}`"
       />
     </q-breadcrumbs>
-    <div class="q-flex-grow-1">
+    <div class="q-flex-grow-1" v-if="promotions">
       <q-carousel swipeable animated v-model="slide" infinite height="100%">
         <q-carousel-slide
-          v-for="(promotion, index) in promotionList"
+          v-for="(promotion, index) in promotions"
           :key="`prom-${index}`"
           :name="index"
           class="q-pa-none"
@@ -96,6 +96,19 @@ export class PublicProductsHome extends Vue {
   }
   GoToTop() {
     window.scrollTo(0, 0);
+  }
+  get promotions() {
+    if (!this.promotionList) return [];
+
+    if (this.$q.platform.is.mobile) {
+      return this.promotionList.filter(
+        (promotion: PublicPromotion) => promotion.banner_image_mobile
+      );
+    } else if (this.$q.platform.is.desktop) {
+      return this.promotionList.filter(
+        (promotion: PublicPromotion) => promotion.banner_image_long
+      );
+    }
   }
 }
 export default toNative(PublicProductsHome);

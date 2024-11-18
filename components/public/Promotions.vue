@@ -2,7 +2,7 @@
   <div
     class="q-d-flex q-flex-grow-1 q-pa-sm"
     :class="{ 'q-pa-sm': $q.platform.is.desktop }"
-    v-if="promotionList && promotionList.length"
+    v-if="promotions && promotions.length"
   >
     <q-carousel
       swipeable
@@ -18,46 +18,38 @@
       :height="$q.platform.is.desktop ? '500px' : '250px'"
     >
       <q-carousel-slide
-        v-for="(image, index) in promotionList"
+        v-for="(image, index) in promotions"
         :name="index"
         class="q-pa-none"
       >
-        <div class="row fit justify-start no-wrap">
+        <div
+          class="row fit justify-start no-wrap"
+          v-if="$q.platform.is.desktop && image.banner_image?.large_image"
+        >
           <q-img
             class="col-12 full-height"
-            :src="
-              $q.platform.is.desktop
-                ? image.banner_image?.large_image
-                : image.banner_image_mobile?.large_image
-            "
+            :src="image.banner_image?.large_image"
             ratio="1"
             fit="cover"
             @click="loadProduct(image.uuid)"
           />
         </div>
+        <div
+          class="row fit justify-start no-wrap"
+          v-else-if="
+            $q.platform.is.mobile && image.banner_image_mobile?.large_image
+          "
+        >
+          <q-img
+            class="col-12 full-height"
+            :src="image.banner_image_mobile?.large_image"
+            ratio="1"
+            fit="fill"
+            @click="loadProduct(image.uuid)"
+          />
+        </div>
       </q-carousel-slide>
     </q-carousel>
-
-    <!-- <q-carousel arrows animated v-model="slide" height="500px">
-            
-            <q-carousel-slide name="first" v-for="promotion in promotionList">
-                <div class="row fit justify-start no-wrap">
-                    <q-img class=" col-12 full-height" :img-src="promotion.banner_image?.large_image" fit="contain"
-                        ratio="1" />
-                    <div class="absolute-bottom custom-caption">
-                        <div class="text-h2">{{ promotion.name }}</div>
-                        <q-btn class="q-mt-md text-bold" color="primary" label="Shop Now" outline size="lg" />
-                    </div>
-                </div>
-
-            </q-carousel-slide>
-        </q-carousel> -->
-
-    <!-- <div v-for="promotion in promotionList">
-
-            <q-img v-if="promotion.banner_image && promotion.banner_image.large_image" width="100%" height="25vh"
-                fit="contain" :src="promotion.banner_image?.large_image" />
-        </div> -->
   </div>
 </template>
 
@@ -82,6 +74,19 @@ export class PublicPromotions extends Vue {
         this.promotionList = result.results;
       }
     });
+  }
+  get promotions() {
+    if (!this.promotionList) return [];
+
+    if (this.$q.platform.is.mobile) {
+      return this.promotionList.filter(
+        (promotion: PublicPromotion) => promotion.banner_image_mobile
+      );
+    } else if (this.$q.platform.is.desktop) {
+      return this.promotionList.filter(
+        (promotion: PublicPromotion) => promotion.banner_image
+      );
+    }
   }
   loadProduct(promotion_uuid: any) {
     this.$router.push(`/categories/All_Products?campaign=${promotion_uuid}`);

@@ -233,6 +233,11 @@ export default {
           text: "Promotions",
           link: "/pages-admin/promotions/",
         },
+        {
+          icon: "ad_units",
+          text: "Banners",
+          link: "/pages-admin/banners/",
+        },
       ],
       links4: [
         { icon: "list_alt", text: "Orders", link: "/pages-admin/orders/" },

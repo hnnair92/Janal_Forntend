@@ -52,13 +52,17 @@
 </template>
 
 <script lang="ts">
-import { CampaignsService, Promotion } from "@/openapi";
+import {
+  AdminBannerManagementService,
+  CampaignsService,
+  Promotion,
+} from "@/openapi";
 import { Component, Vue, Watch, toNative } from "vue-facing-decorator";
 
 @Component({
   name: "PromotionsList",
 })
-export class PromotionsList extends Vue {
+export class BannerList extends Vue {
   serverData: Array<Promotion> = Array<Promotion>();
 
   loading = false;
@@ -67,7 +71,7 @@ export class PromotionsList extends Vue {
     {
       name: "name",
       align: "center",
-      label: "Campaign Name",
+      label: "Banner Name",
       field: "name",
       sortable: false,
     },
@@ -76,19 +80,6 @@ export class PromotionsList extends Vue {
       align: "center",
       label: "Active",
       field: "is_enabled",
-      sortable: false,
-    },
-    {
-      name: "description",
-      align: "center",
-      label: "Description",
-      field: "description",
-    },
-    {
-      name: "discount_percentage",
-      align: "center",
-      label: "Discount(%)",
-      field: "discount_percentage",
       sortable: false,
     },
     {
@@ -103,13 +94,6 @@ export class PromotionsList extends Vue {
       align: "center",
       label: "End Date",
       field: "end_date",
-      sortable: false,
-    },
-    {
-      name: "ColorOption",
-      align: "center",
-      label: "Available Fabrics",
-      field: "ColorOption",
       sortable: false,
     },
     {
@@ -135,7 +119,7 @@ export class PromotionsList extends Vue {
   @Watch("pagination", { deep: true })
   loadData() {
     this.loading = true;
-    CampaignsService.campaignsList(
+    AdminBannerManagementService.adminBannersList(
       this.pagination.page,
       this.pagination.rowsPerPage
     )
@@ -153,10 +137,10 @@ export class PromotionsList extends Vue {
   handleButtonClick(rowData: Promotion) {
     // Perform the desired action using the rowData from the clicked row
     // For example, you can access rowData.id, rowData.name, or any other property as needed.
-    (this as any).$router.push(`/pages-admin/promotions/${rowData.id}/edit`);
+    (this as any).$router.push(`/pages-admin/banners/${rowData.id}/edit`);
   }
 }
-export default toNative(PromotionsList);
+export default toNative(BannerList);
 </script>
 
 <style scoped>

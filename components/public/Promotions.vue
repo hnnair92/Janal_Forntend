@@ -29,8 +29,8 @@
           <q-img
             class="col-12 full-height"
             :src="image.banner_image?.large_image"
-            ratio="1"
-            fit="cover"
+            ratio="16/9"
+            fit="fill"
             @click="loadProduct(image.uuid)"
           />
         </div>

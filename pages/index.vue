@@ -37,14 +37,15 @@
         <TopSellingProducts></TopSellingProducts>
       </div>
       <div class="q-flex-grow-1 q-mt-xl">
-        <Testimony></Testimony>
+        <Customize></Customize>
       </div>
       <div class="q-flex-grow-1 q-mt-xl">
         <Advantage></Advantage>
       </div>
       <div class="q-flex-grow-1 q-mt-xl">
-        <Customize></Customize>
+        <Testimony></Testimony>
       </div>
+
       <CommonFooter></CommonFooter>
     </div>
   </q-page>

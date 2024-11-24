@@ -13,7 +13,13 @@
               </div>
             </div>
             <div class="text-subtitle1 text-bold">
-              Total: ${{ orderInfo.order_total }}
+              <span>Total: ${{ orderInfo.items_total }}</span>
+              <span v-if="orderInfo.items_discount_total" class="text-red">
+                | Discount: - ${{ orderInfo.items_discount_total }}</span
+              >
+              <span v-if="orderInfo.sale_total" class="text-green">
+                | Sales Total: - ${{ orderInfo.total_sales }}</span
+              >
             </div>
           </div>
           <div class="col text-right">
@@ -169,6 +175,14 @@
       </q-card-section>
       <q-card-section class="q-pb-none">
         <q-btn
+          color="green"
+          icon="print"
+          label="Print Shipping Label"
+          unelevated
+          class="q-mx-sm"
+          @click="printShippingLabel"
+        />
+        <q-btn
           color="blue"
           icon="alternate_email"
           label="View Billing Information"
@@ -307,6 +321,15 @@ export class OrderCard extends Vue {
     if (this.orderInfo.id) {
       window.open(
         `${this.$config.public.baseURL}/customer/orders/${this.orderInfo.uuid}/invoice`,
+        "_blank"
+      );
+    }
+  }
+
+  printShippingLabel() {
+    if (this.orderInfo.uuid) {
+      window.open(
+        `${this.$config.public.baseURL}/admin/orders/${this.orderInfo.uuid}/shipping-label`,
         "_blank"
       );
     }

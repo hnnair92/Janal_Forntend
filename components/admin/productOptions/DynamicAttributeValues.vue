@@ -57,6 +57,11 @@
             type="text"
             dense
           ></q-input>
+          <q-checkbox
+            class="q-mt-md"
+            v-model="activeItem.position_required"
+            label="Position Required (This will enable the user to select a position Left/Right from a dropdown)"
+          />
 
           <q-input
             class="q-mt-md"

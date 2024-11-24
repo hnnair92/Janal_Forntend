@@ -12,6 +12,8 @@ export type DynamicAttributeValue = {
     deleted_at?: string | null;
     value: string;
     price: string;
+    position_required?: boolean;
+    position?: DynamicAttributeValue.position | null;
     min_height?: number | null;
     max_height?: number | null;
     min_width?: number | null;
@@ -22,4 +24,10 @@ export type DynamicAttributeValue = {
     attribute: number;
     extra_attributes?: Array<number>;
 };
+export namespace DynamicAttributeValue {
+    export enum position {
+        '_1' = 1,
+        '_2' = 2,
+    }
+}
 

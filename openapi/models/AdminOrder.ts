@@ -12,7 +12,10 @@ export type AdminOrder = {
     billing_address?: Address;
     payment_tracking: OrderPaymentTracking;
     readonly shipped_date?: string;
-    readonly order_total?: string;
+    readonly items_total?: string;
+    readonly items_add_on_total?: string;
+    readonly items_discount_total?: string;
+    readonly total_sales?: string;
     readonly uuid?: string;
     customer_order_id?: string | null;
     sale_total?: string | null;

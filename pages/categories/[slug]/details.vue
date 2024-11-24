@@ -396,6 +396,33 @@
                       </q-tooltip>
                     </q-btn>
                   </div>
+                  <div
+                    class="col-12"
+                    v-if="
+                      dynamicAttribute.position_required &&
+                      selectedItem.attributes_selected[group.id]['selected'][
+                        'id'
+                      ] === dynamicAttribute.id
+                    "
+                  >
+                    <q-select
+                      class="q-my-sm"
+                      outlined
+                      v-model="
+                        selectedItem.attributes_selected[group.id]['selected'][
+                          'position'
+                        ]
+                      "
+                      :options="positions"
+                      option-value="id"
+                      dense
+                      color="secondary"
+                      option-label="name"
+                      label="Position"
+                      emit-value
+                      map-options
+                    />
+                  </div>
                   <div v-if="dynamicAttribute.sub_items">
                     <div
                       v-for="subItem in dynamicAttribute.sub_items"
@@ -720,6 +747,10 @@ export class PublicProductDetailsPage extends Vue {
   fullscreenDialog = false;
   productFabric: PublicProductFabricsDetails = <PublicProductFabricsDetails>{};
 
+  positions = [
+    { id: 1, name: "Left" },
+    { id: 2, name: "Right" },
+  ];
   heightList: number[] = [];
   widthList: number[] = [];
   measurementPrice = 0;
@@ -1089,6 +1120,11 @@ export class PublicProductDetailsPage extends Vue {
       }
       this.selectedItem.attributes_selected[attributeId]["selected"] =
         dynamicAttribute;
+      if (dynamicAttribute.position_required) {
+        this.selectedItem.attributes_selected[attributeId]["selected"][
+          "position"
+        ] = 1;
+      }
       this.updateSelectedOptions(dynamicAttribute.id, existingId);
     }
   }

@@ -20,6 +20,7 @@ export type AdminCartItem = {
     height_fraction?: string | null;
     width_inch?: number | null;
     width_fraction?: string | null;
+    attribute_values_configuration?: any;
     price: string;
     quantity: number;
     discount_amount?: number;

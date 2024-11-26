@@ -21,6 +21,7 @@
           type="textarea"
           dense
           class="q-mb-md"
+          :rules="[(val) => val.length <= 255 || 'Maximum 255 characters']"
         ></q-input>
         <label class="text-weight-medium q-pb-md">Long Description</label>
         <q-input

@@ -1230,8 +1230,6 @@ export class PublicProductDetailsPage extends Vue {
     if (this.selectedItem.attributes_selected) {
       let notSelected = [];
       for (const key in this.selectedItem.attributes_selected) {
-        console.log(key);
-
         if (
           this.selectedItem.attributes_selected.hasOwnProperty(key) &&
           Object.keys(this.selectedItem.attributes_selected[key]["selected"])
@@ -1456,7 +1454,6 @@ export class PublicProductDetailsPage extends Vue {
           this.dynamicAttributeSubItemsDisabled[item.id] = true;
           this.removeSubDynamicSubItem(dynamicId, item.id);
         } else {
-          console.log("Width", width, item.min_width, item.max_width);
           this.dynamicAttributeSubItemsDisabled[item.id] = false;
         }
       }
@@ -1467,66 +1464,67 @@ export class PublicProductDetailsPage extends Vue {
   @Watch("selectedItem.width_inch")
   disableSelection() {
     if (this.dynamicAttributeDisabled && this.productGroups) {
-      for (const [key, value] of Object.entries(this.productGroups)) {
-        // @ts-ignore
-        const items: Array<DynamicAttributesPublic> = value["items"];
-        if (items) {
-          // @ts-ignore
-          for (const item of value["items"]) {
-            const attributeValue: DynamicAttributesPublic = item;
-            // Check for height values in the attributes to disable it
-            if (
-              this.selectedItem.height_inch &&
-              attributeValue.min_height != undefined &&
-              attributeValue.max_height &&
-              attributeValue.id
-            ) {
-              if (
-                this.selectedItem.height_inch >= attributeValue.max_height ||
-                this.selectedItem.height_inch <= attributeValue.min_height
-              ) {
-                this.dynamicAttributeDisabled[attributeValue.id] = true;
-                // Remove this from selection if already selected
-                // @ts-ignore
-                this.removeSelection(value["id"], attributeValue.id);
-              } else {
-                this.dynamicAttributeDisabled[attributeValue.id] = false;
-              }
-            }
+      for (const [groupKey, groupValue] of Object.entries(
+        this.productGroups
+      ) as [any, any][]) {
+        const items = groupValue["items"] || [];
 
-            // Check for width values in the attributes to disable it
+        for (const item of items) {
+          const attributeValue = item;
+          let isDisabled = false; // Combined flag for disabling
+
+          // Check height-related conditions
+          if (
+            this.selectedItem.height_inch &&
+            attributeValue.min_height != undefined &&
+            attributeValue.max_height != undefined &&
+            attributeValue.id
+          ) {
             if (
-              this.selectedItem.width_inch &&
-              attributeValue.min_width != undefined &&
-              attributeValue.max_width &&
-              attributeValue.id
+              this.selectedItem.height_inch > attributeValue.max_height ||
+              this.selectedItem.height_inch < attributeValue.min_height
             ) {
-              if (
-                this.selectedItem.width_inch >= attributeValue.max_width ||
-                this.selectedItem.width_inch <= attributeValue.min_width
-              ) {
-                this.dynamicAttributeDisabled[attributeValue.id] = true;
-                // Remove this from selection if already selected
-                // @ts-ignore
-                this.removeSelection(value["id"], attributeValue.id);
-              } else {
-                this.dynamicAttributeDisabled[attributeValue.id] = false;
-              }
+              isDisabled = true;
             }
+          }
+
+          // Check width-related conditions
+          if (
+            this.selectedItem.width_inch &&
+            attributeValue.min_width != undefined &&
+            attributeValue.max_width != undefined &&
+            attributeValue.id
+          ) {
             if (
-              attributeValue &&
-              attributeValue.id &&
-              attributeValue.sub_items &&
-              this.selectedItem.height_inch &&
+              this.selectedItem.width_inch > attributeValue.max_width ||
+              this.selectedItem.width_inch < attributeValue.min_width
+            ) {
+              isDisabled = true;
+            }
+          }
+
+          // Update disabled status
+          if (attributeValue.id) {
+            this.dynamicAttributeDisabled[attributeValue.id] = isDisabled;
+
+            // Remove from selection if disabled
+            if (isDisabled) {
+              this.removeSelection(groupValue["id"], attributeValue.id);
+            }
+          }
+
+          // Check and process sub-items
+          if (
+            attributeValue.sub_items &&
+            this.selectedItem.height_inch &&
+            this.selectedItem.width_inch
+          ) {
+            this.disableSubitems(
+              attributeValue.id,
+              attributeValue.sub_items,
+              this.selectedItem.height_inch,
               this.selectedItem.width_inch
-            ) {
-              this.disableSubitems(
-                attributeValue.id,
-                attributeValue.sub_items,
-                this.selectedItem.height_inch,
-                this.selectedItem.width_inch
-              );
-            }
+            );
           }
         }
       }

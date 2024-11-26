@@ -7,7 +7,7 @@
         v-if="productList && productList.length"
       >
         <div
-          class="q-pa-xs col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-6"
+          class="q-pa-xs col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12"
           v-for="product_fabrics in productList"
         >
           <ProductsCard

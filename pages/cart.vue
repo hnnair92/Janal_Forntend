@@ -107,9 +107,9 @@
     </div>
     <div
       v-if="cartItems && cartItems.cartItems && cartItems.cartItems.length"
-      class="q-d-flex q-flex-grow-1 row wrap justify-center"
+      class="q-d-flex q-flex-grow-1 column wrap justify-center q-px-md"
     >
-      <div class="col-sm-12 col-xl-10 col-md-12">
+      <div class="col-sm-12 col-xl-10 col-md-12 col-xm-12">
         <div class="text-h6 q-my-sm">Order Information</div>
         <q-separator />
         <q-list>

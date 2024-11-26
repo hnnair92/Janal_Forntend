@@ -172,6 +172,17 @@
           </q-avatar>
         </div>
         <div class="lt-md">
+          <q-btn flat round size="lg" icon="shopping_cart" to="/cart/" outline>
+            <q-badge
+              v-if="cartCount > 0"
+              floating
+              rounded
+              class="q-ma-sm text-black"
+              color="primary"
+              >{{ cartCount }}</q-badge
+            >
+            <q-tooltip class="bg-secondary text-body2">Cart</q-tooltip>
+          </q-btn>
           <q-btn
             flat
             dense

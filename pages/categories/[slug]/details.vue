@@ -455,9 +455,11 @@
                       >
                     </div>
                   </div>
+                </q-card-section>
+                <q-card-section class="q-pa-sm">
                   <div
                     class="col-12 unavailable-card"
-                    v-else-if="
+                    v-if="
                       dynamicAttribute.help_text &&
                       dynamicAttributeDisabled[dynamicAttribute.id]
                     "

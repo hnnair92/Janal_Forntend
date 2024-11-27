@@ -763,7 +763,7 @@ export class PublicProductDetailsPage extends Vue {
   isFetching = false;
   loadingToCart = false;
   loadingMessage = "Adding to cart...";
-  inchOptions = ["0", "1/8", "1/4", "3/8", "1/2", "5/8", "3/4", "7/4"];
+  inchOptions = ["0", "1/8", "1/4", "3/8", "1/2", "5/8", "3/4", "7/8"];
   showMessage = false;
   dynamicAttributeDisabled: any = {};
   dynamicAttributeSubItemsDisabled: any = {};

@@ -149,7 +149,7 @@
                       </q-item-section>
                     </q-item>
 
-                    <q-item tag="label" v-ripple v-if="order.shipping_address">
+                    <!-- <q-item tag="label" v-ripple v-if="order.shipping_address">
                       <q-item-section avatar>
                         <q-radio
                           v-model="order.shipping_address.shipping"
@@ -161,7 +161,7 @@
                         <q-item-label>Express Shipping</q-item-label>
                         <q-item-label caption>(+ $10)</q-item-label>
                       </q-item-section>
-                    </q-item>
+                    </q-item> -->
                   </q-list>
                 </div>
                 <q-stepper-navigation class="text-right q-mx-lg">

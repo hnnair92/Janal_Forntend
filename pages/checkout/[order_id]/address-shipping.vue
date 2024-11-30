@@ -192,7 +192,7 @@
               <q-step :name="4" title="Payment" icon="credit_card">
                 <p>
                   <strong
-                    >Please click on proceed to pay now button to begin your
+                    >Please click on proceed to pay button to begin your
                     payment.</strong
                   >
                 </p>

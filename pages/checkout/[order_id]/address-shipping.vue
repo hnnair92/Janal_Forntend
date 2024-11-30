@@ -25,13 +25,27 @@
     </Script>
 
     <div class="q-d-flex q-flex-grow-1 row wrap justify-center">
-      <div class="col-xl-10 col-md-12 q-pa-md q-d-flex q-flex-grow-1 column">
+      <div
+        class="col-xl-10 col-md-12 col-sm-12 col-xs-12 q-pa-sm q-d-flex q-flex-grow-1 column"
+      >
         <div class="q-d-flex q-flex-grow-1">
-          <div class="text-h4">Address and Shipping</div>
+          <div class="row">
+            <div class="col-xl-6 col-md-6 col-lg-6 col-sm-12 col-xs-12">
+              <div class="text-h4">Address and Shipping</div>
+            </div>
+            <div
+              class="col-xl-6 col-md-6 col-lg-6 col-sm-12 col-xs-12"
+              v-if="order.created_on"
+            >
+              <CartCountdownTimer
+                :startTime="order.created_on"
+              ></CartCountdownTimer>
+            </div>
+          </div>
           <q-separator class="q-my-md" />
         </div>
         <div class="q-d-flex q-flex-grow-1 row">
-          <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8 q-pa-md">
+          <div class="col-sm-12 col-md-8 col-lg-8 col-xl-8 q-pa-sm">
             <q-stepper
               v-model="step"
               ref="stepper"
@@ -365,6 +379,7 @@ import {
 import SingleCartItem from "@/components/public/SingleCartItem.vue";
 import AddressCard from "@/components/customer/checkout/AddressCard.vue";
 import Loading from "@/components/public/Loading.vue";
+import CartCountdownTimer from "@/components/public/CartCountdownTimer.vue";
 import {
   Address,
   ApiError,
@@ -378,7 +393,7 @@ import {
 @Component({
   name: "AddressShippingPage",
   template: "default",
-  components: { SingleCartItem, Loading, AddressCard },
+  components: { SingleCartItem, Loading, AddressCard, CartCountdownTimer },
 })
 export class AddressShippingPage extends Vue {
   step = 1;

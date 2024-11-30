@@ -1,241 +1,266 @@
 <template>
-  <q-page class="q-pa-sm">
-    <Loading :isLoading="isFetching"></Loading>
-    <CartProductAdded
-      :isLoading.sync="loadingToCart"
-      :message.sync="loadingMessage"
-    />
-    <q-breadcrumbs active-color="secondary q-ml-lg text-subtitle2">
-      <q-breadcrumbs-el label="Home" to="/" />
-      <q-breadcrumbs-el
-        label="Shades, Blinds & Shutters"
-        :to="`/categories/All_Products`"
+  <q-page-container>
+    <q-page class="q-pa-sm">
+      <Loading :isLoading="isFetching"></Loading>
+      <CartProductAdded
+        :isLoading.sync="loadingToCart"
+        :message.sync="loadingMessage"
       />
-      <q-breadcrumbs-el
-        :label="$route.params.slug.replace('_', ' ')"
-        :to="`/categories/${$route.params.slug}`"
-      />
-      <q-breadcrumbs-el :label="productFabric.fabric_name" />
-    </q-breadcrumbs>
+      <q-breadcrumbs active-color="secondary q-ml-lg text-subtitle2">
+        <q-breadcrumbs-el label="Home" to="/" />
+        <q-breadcrumbs-el
+          label="Shades, Blinds & Shutters"
+          :to="`/categories/All_Products`"
+        />
+        <q-breadcrumbs-el
+          :label="$route.params.slug.replace('_', ' ')"
+          :to="`/categories/${$route.params.slug}`"
+        />
+        <q-breadcrumbs-el :label="productFabric.fabric_name" />
+      </q-breadcrumbs>
 
-    <div class="q-d-flex q-flex-grow-1 row wrap justify-center q-mt-md q-pa-md">
-      <!-- Left Panel -->
       <div
-        class="col-xl-4 col-lg-3 col-md-4 q-pa-sm q-d-flex q-flex-grow-1 column"
+        class="q-d-flex q-flex-grow-1 row wrap justify-center q-mt-md"
+        :class="$q.platform.is.mobile ? 'q-pa-sm' : 'q-pa-md'"
       >
-        <div class="q-flex-grow-1">
-          <div class="q-pa-none q-mt-sm q-flex-grow-1 column items-center">
-            <q-carousel
-              swipeable
-              animated
-              v-model="slide"
-              thumbnails
-              infinite
-              class="height-prod-image"
-            >
-              <q-carousel-slide
-                v-for="(image, index) in productImages"
-                :name="index"
-                @click="fullscreenDialog = true"
-                class="q-pa-none"
-                :img-src="image.large_image"
+        <!-- Left Panel -->
+        <div
+          class="col-xl-4 col-lg-3 col-md-4 col-sm-12 col-xs-12 q-pa-sm q-d-flex q-flex-grow-1 column"
+        >
+          <div class="q-flex-grow-1">
+            <div class="q-pa-none q-mt-sm q-flex-grow-1 column items-center">
+              <q-carousel
+                swipeable
+                animated
+                v-model="slide"
+                thumbnails
+                infinite
+                class="height-prod-image"
               >
-                <div class="row fit justify-center no-wrap">
-                  <q-img
-                    class="col-12 full-height"
-                    :src="image.large_image"
-                    fit="contain"
+                <q-carousel-slide
+                  v-for="(image, index) in productImages"
+                  :name="index"
+                  @click="fullscreenDialog = true"
+                  class="q-pa-none"
+                  :img-src="image.large_image"
+                >
+                  <div class="row fit justify-center no-wrap">
+                    <q-img
+                      class="col-12 full-height"
+                      :src="image.large_image"
+                      fit="contain"
+                    />
+                  </div>
+                </q-carousel-slide>
+              </q-carousel>
+              <div class="text-subtitle1 text-center text-italic">
+                {{
+                  selectedItem.color.color_name
+                    ? selectedItem.color.color_name.replace("_", " ")
+                    : ""
+                }}
+              </div>
+            </div>
+            <div class="q-pa-md text-h6">
+              <div class="q-d-flex q-flex-1 row text-body1 q-px-sm q-mb-sm">
+                <div class="col">Unit Price</div>
+                <div class="col text-right">${{ measurementPrice }}</div>
+              </div>
+              <div
+                class="q-d-flex q-flex-1 row text-body1 q-px-sm self-center q-mb-sm"
+              >
+                <div class="col q-pt-md">Quantity</div>
+                <div class="col column items-end">
+                  <q-input
+                    class="text-body1"
+                    square
+                    outlined
+                    v-model.number="selectedItem.quantity"
+                    ref="quantityRef"
+                    :rules="inputQuantity"
+                    type="number"
+                    dense
+                    style="width: 30%"
                   />
                 </div>
-              </q-carousel-slide>
-            </q-carousel>
-            <div class="text-subtitle1 text-center text-italic">
-              {{
-                selectedItem.color.color_name
-                  ? selectedItem.color.color_name.replace("_", " ")
-                  : ""
-              }}
-            </div>
-          </div>
-          <div class="q-pa-md text-h6">
-            <div class="q-d-flex q-flex-1 row text-body1 q-px-sm q-mb-sm">
-              <div class="col">Unit Price</div>
-              <div class="col text-right">${{ measurementPrice }}</div>
-            </div>
-            <div
-              class="q-d-flex q-flex-1 row text-body1 q-px-sm self-center q-mb-sm"
-            >
-              <div class="col q-pt-md">Quantity</div>
-              <div class="col column items-end">
-                <q-input
-                  class="text-body1"
-                  square
-                  outlined
-                  v-model.number="selectedItem.quantity"
-                  ref="quantityRef"
-                  :rules="inputQuantity"
-                  type="number"
-                  dense
-                  style="width: 30%"
-                />
               </div>
-            </div>
-            <div
-              class="q-d-flex q-flex-1 row text-body1 q-px-sm self-center q-mb-sm text-weight-medium"
-              v-if="addOnPrices || discount_price"
-            >
-              <div class="col">Subtotal</div>
-              <div class="col text-right">${{ subtotal.toFixed(2) }}</div>
-            </div>
-            <div
-              class="q-d-flex q-flex-1 row text-body1 q-px-sm self-center q-mb-md"
-              v-if="addOnPrices"
-            >
-              <div class="col">Add-on x {{ selectedItem.quantity }}</div>
-              <div class="col text-right">${{ addOnTotal.toFixed(2) }}</div>
-            </div>
-
-            <div
-              class="q-d-flex q-flex-1 row text-body1 q-px-sm self-center q-mb-md text-red text-italic"
-              v-if="discount_price"
-            >
-              <div class="col">Promotion - {{ discount }}% off</div>
-              <div class="col text-right">
-                -${{ discount_price.toFixed(2) }}
+              <div
+                class="q-d-flex q-flex-1 row text-body1 q-px-sm self-center q-mb-sm text-weight-medium"
+                v-if="addOnPrices || discount_price"
+              >
+                <div class="col">Subtotal</div>
+                <div class="col text-right">${{ subtotal.toFixed(2) }}</div>
               </div>
-            </div>
+              <div
+                class="q-d-flex q-flex-1 row text-body1 q-px-sm self-center q-mb-md"
+                v-if="addOnPrices"
+              >
+                <div class="col">Add-on x {{ selectedItem.quantity }}</div>
+                <div class="col text-right">${{ addOnTotal.toFixed(2) }}</div>
+              </div>
 
-            <!-- <div class="q-d-flex q-flex-1 row text-body1 q-px-sm q-mb-md">
+              <div
+                class="q-d-flex q-flex-1 row text-body1 q-px-sm self-center q-mb-md text-red text-italic"
+                v-if="discount_price"
+              >
+                <div class="col">Promotion - {{ discount }}% off</div>
+                <div class="col text-right">
+                  -${{ discount_price.toFixed(2) }}
+                </div>
+              </div>
+
+              <!-- <div class="q-d-flex q-flex-1 row text-body1 q-px-sm q-mb-md">
                         <div class="col">Warranty (3-Year Limited Warranty) </div>
                         <div class="col text-right">FREE</div>
                     </div> -->
-            <q-separator />
-            <!-- <div class="q-d-flex q-flex-1 row text-body1 q-px-sm q-mb-md q-mt-md">
+              <q-separator />
+              <!-- <div class="q-d-flex q-flex-1 row text-body1 q-px-sm q-mb-md q-mt-md">
                         <div class="col">Subtotal </div>
                         <div class="col text-right text-bold">$ {{ subtotal }}</div>
                     </div> -->
-            <!-- <div class="q-d-flex q-flex-1 row text-h6 q-px-sm q-mb-md text-red">
+              <!-- <div class="q-d-flex q-flex-1 row text-h6 q-px-sm q-mb-md text-red">
                         <div class="col">Promotion </div>
                         <div class="col text-right">$</div>
                     </div> -->
-            <div
-              class="q-d-flex q-flex-1 row text-body1 text-bold q-px-sm q-mb-md text-secondary q-mt-sm"
-            >
-              <div class="col">Total Sale Price</div>
-              <div class="col text-right">${{ final_total }}</div>
-            </div>
-            <div class="q-d-flex q-flex-1 row text-h6 q-px-sm q-mb-md">
               <div
-                class="col-xs-12 col-md-6 q-mt-sm"
-                :class="{ 'q-pr-sm': $q.platform.is.desktop }"
+                class="q-d-flex q-flex-1 row text-body1 text-bold q-px-sm q-mb-md text-secondary q-mt-sm"
               >
-                <q-btn
-                  class="full-width text-black"
-                  square
-                  unelevated
-                  color="primary"
-                  icon="add_shopping_cart"
-                  :loading="loadingToCart"
-                  :size="$q.platform.is.desktop ? 'md' : 'sm'"
-                  :padding="$q.platform.is.desktop ? 'md' : 'sm'"
-                  label="Add to cart"
-                  @click.prevent="addToCart"
-                >
-                  <template v-slot:loading>
-                    <q-spinner-hourglass class="on-left" />
-                    Adding to cart
-                  </template>
-                </q-btn>
+                <div class="col">Total Sale Price</div>
+                <div class="col text-right">${{ final_total }}</div>
               </div>
-              <div
-                class="col-xs-12 col-md-6 q-mt-sm"
-                :class="{ 'q-pl-sm': $q.platform.is.desktop }"
-              >
-                <q-btn
-                  @click.prevent="addProductToWishlist(Number(fabricId))"
-                  class="full-width"
-                  square
-                  outline
-                  color="black"
-                  :icon="
-                    isInWishlist(Number(fabricId))
-                      ? 'bookmark_added'
-                      : 'bookmark_add'
-                  "
-                  :size="$q.platform.is.desktop ? 'md' : 'sm'"
-                  :padding="$q.platform.is.desktop ? 'md' : 'sm'"
-                  :label="isInWishlist(Number(fabricId)) ? 'Saved' : 'Save'"
-                  :disable="isInWishlist(Number(fabricId))"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Right Panel -->
-      <div
-        class="col-xl-8 col-lg-9 col-md-8 q-pa-sm"
-        :class="{ 'desktop-right-absolute': $q.platform.is.desktop }"
-      >
-        <div v-if="$q.platform.is.mobile">
-          <q-separator class="q-mb-md" />
-        </div>
-
-        <div
-          class="q-d-flex q-flex-grow-1 column q-ma-none q-pa-sm"
-          :class="{ 'q-ml-xl': $q.platform.is.desktop }"
-          v-if="productFabric && productFabric.product"
-        >
-          <div class="text-h4">{{ productFabric.fabric_name }}</div>
-          <div class="text-h6 q-mt-sm">{{ productFabric.product.name }}</div>
-          <div class="text-subtitle1 q-mt-lg">
-            {{ productFabric.product.short_description }}
-          </div>
-          <div class="q-mt-xl">
-            <div class="text-h6">Color and Fabrics</div>
-            <q-separator class="q-mt-md" />
-            <div
-              v-for="(value, key) in productColors"
-              :key="`color-${key}`"
-              class="q-pa-sm"
-            >
-              {{ key ? key.toString().toUpperCase() : "" }}
-              <div class="q-d-flex row">
+              <div class="q-d-flex q-flex-1 row text-h6 q-px-sm q-mb-md">
                 <div
-                  v-for="(color_option, index) in value"
-                  :key="`${color_option.name}-${index}`"
+                  class="col-xs-12 col-md-6 q-mt-sm"
+                  v-if="$q.platform.is.desktop"
                 >
-                  <div style="width: 65px" class="q-mr-md">
-                    <q-img
-                      class="q-ma-sm"
-                      v-if="color_option.fabric_image"
-                      :style="buttonStyle(color_option)"
-                      :src="color_option.fabric_image?.large_image"
-                      fit="fill"
-                      @click="selectColor(color_option)"
-                      height="64px"
-                      ratio="1"
-                      width="64px"
-                    >
-                      <q-tooltip
-                        class="bg-primary text-black text-body2"
-                        anchor="top middle"
-                        self="bottom middle"
-                        :offset="[10, 10]"
-                      >
-                        {{ color_option.color_name }}
-                      </q-tooltip>
-                    </q-img>
-                    <div class="q-px-sm text-break">
-                      {{
-                        color_option.color_name
-                          ? color_option.color_name.replace("_", " ")
-                          : ""
-                      }}
-                    </div>
-                  </div>
+                  <q-btn
+                    class="full-width text-black"
+                    square
+                    unelevated
+                    color="primary"
+                    icon="add_shopping_cart"
+                    :loading="loadingToCart"
+                    :size="$q.platform.is.desktop ? 'md' : 'sm'"
+                    :padding="$q.platform.is.desktop ? 'md' : 'sm'"
+                    label="Add to cart"
+                    @click.prevent="addToCart"
+                  >
+                    <template v-slot:loading>
+                      <q-spinner-hourglass class="on-left" />
+                      Adding to cart
+                    </template>
+                  </q-btn>
+                </div>
+                <q-page-sticky
+                  position="bottom-right"
+                  :offset="[18, 18]"
+                  style="z-index: 1"
+                  v-else
+                >
+                  <q-btn
+                    unelevated
+                    color="secondary"
+                    icon="add_shopping_cart"
+                    :loading="loadingToCart"
+                    label="Add to cart"
+                    padding="md"
+                    @click.prevent="addToCart"
+                  >
+                    <template v-slot:loading>
+                      <q-spinner-hourglass class="on-left" />
+                      Adding to cart
+                    </template>
+                  </q-btn>
+                </q-page-sticky>
+                <div
+                  class="col-xs-12 col-md-6 q-mt-sm"
+                  :class="{ 'q-pl-sm': $q.platform.is.desktop }"
+                >
+                  <q-btn
+                    @click.prevent="addProductToWishlist(Number(fabricId))"
+                    class="full-width"
+                    square
+                    outline
+                    color="black"
+                    :icon="
+                      isInWishlist(Number(fabricId))
+                        ? 'bookmark_added'
+                        : 'bookmark_add'
+                    "
+                    :size="$q.platform.is.desktop ? 'md' : 'sm'"
+                    :padding="$q.platform.is.desktop ? 'md' : 'sm'"
+                    :label="isInWishlist(Number(fabricId)) ? 'Saved' : 'Save'"
+                    :disable="isInWishlist(Number(fabricId))"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Right Panel -->
+        <div
+          class="col-xl-8 col-lg-9 col-md-8 q-pa-sm"
+          :class="{ 'desktop-right-absolute': $q.platform.is.desktop }"
+        >
+          <div v-if="$q.platform.is.mobile">
+            <q-separator class="q-mb-md" />
+          </div>
 
-                  <!-- <q-btn v-for="(color_option, index) in value" :key="`${color_option.name}-${index}`" flat
+          <div
+            class="q-d-flex q-flex-grow-1 column q-ma-none q-pa-sm"
+            :class="{ 'q-ml-xl': $q.platform.is.desktop }"
+            v-if="productFabric && productFabric.product"
+          >
+            <div class="text-h4">{{ productFabric.fabric_name }}</div>
+            <div class="text-h6 q-mt-sm">{{ productFabric.product.name }}</div>
+            <div class="text-subtitle1 q-mt-lg">
+              {{ productFabric.product.short_description }}
+            </div>
+            <div class="q-mt-xl">
+              <div class="text-h6">Color and Fabrics</div>
+              <q-separator class="q-mt-md" />
+              <div
+                v-for="(value, key) in productColors"
+                :key="`color-${key}`"
+                class="q-pa-sm"
+              >
+                {{ key ? key.toString().toUpperCase() : "" }}
+                <div class="q-d-flex row">
+                  <div
+                    v-for="(color_option, index) in value"
+                    :key="`${color_option.name}-${index}`"
+                  >
+                    <div style="width: 65px" class="q-mr-md">
+                      <q-img
+                        class="q-ma-sm"
+                        v-if="color_option.fabric_image"
+                        :style="buttonStyle(color_option)"
+                        :src="color_option.fabric_image?.large_image"
+                        fit="fill"
+                        @click="selectColor(color_option)"
+                        height="64px"
+                        ratio="1"
+                        width="64px"
+                      >
+                        <q-tooltip
+                          class="bg-primary text-black text-body2"
+                          anchor="top middle"
+                          self="bottom middle"
+                          :offset="[10, 10]"
+                        >
+                          {{ color_option.color_name }}
+                        </q-tooltip>
+                      </q-img>
+                      <div class="q-px-sm text-break">
+                        {{
+                          color_option.color_name
+                            ? color_option.color_name.replace("_", " ")
+                            : ""
+                        }}
+                      </div>
+                    </div>
+
+                    <!-- <q-btn v-for="(color_option, index) in value" :key="`${color_option.name}-${index}`" flat
                                     round :style="buttonStyle(color_option)" class="q-mx-sm q-my-sm"
                                     @click="selectColor(color_option)">
                                     <q-tooltip class="bg-primary text-black text-body2" anchor="top middle"
@@ -243,297 +268,301 @@
                                         {{ color_option.color_name }}
                                     </q-tooltip>
                                 </q-btn> -->
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="text-h6 q-mt-xl">Size Selection</div>
-          <q-separator class="q-mt-md" />
-          <div class="q-mt-md row q-col-gutter-x-xl q-pa-md">
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
-              <label class="text-subtitle2">Width</label>
-              <div class="row">
-                <q-input
-                  class="text-body1 col"
-                  square
-                  outlined
-                  v-model="selectedItem.width_inch"
-                  ref="widthRef"
-                  suffix="in"
-                  type="number"
-                  @change="updateQueryParams('width', selectedItem.width_inch)"
-                  :rules="inputRulesWidth"
-                />
-                <q-select
-                  class="col q-ml-sm text-body1"
-                  square
-                  outlined
-                  v-model="selectedItem.width_fraction"
-                  color="black"
-                  :options="inchOptions"
-                />
-              </div>
-            </div>
-
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
-              <label class="text-subtitle2">Height</label>
-              <div class="row">
-                <q-input
-                  class="text-body1 col"
-                  square
-                  outlined
-                  v-model="selectedItem.height_inch"
-                  ref="heightRef"
-                  suffix="in"
-                  type="number"
-                  @change="
-                    updateQueryParams('height', selectedItem.height_inch)
-                  "
-                  :rules="inputRulesHeight"
-                />
-                <q-select
-                  class="col q-ml-sm text-body1"
-                  square
-                  outlined
-                  v-model="selectedItem.height_fraction"
-                  color="black"
-                  :options="inchOptions"
-                />
-              </div>
-            </div>
-          </div>
-          <div
-            class="q-mt-sm column q-pa-sm"
-            v-for="(group, attributeName) in productGroups"
-            v-if="productGroups"
-            :key="attributeName"
-          >
-            <div class="text-h6 q-mt-md">
-              {{ attributeName }}
-              <q-btn
-                outline
-                round
-                icon="info"
-                size="sm"
-                dense
-                color="grey"
-                v-if="group.helpText"
-              >
-                <q-tooltip
-                  anchor="center right"
-                  self="center left"
-                  :offset="[10, 10]"
-                  class="text-body2"
-                >
-                  {{ group.helpText }}
-                </q-tooltip>
-              </q-btn>
-            </div>
+            <div class="text-h6 q-mt-xl">Size Selection</div>
             <q-separator class="q-mt-md" />
-            <div
-              class="row"
-              :class="{ 'justify-center': $q.platform.is.mobile }"
-            >
-              <q-card
-                v-for="(dynamicAttribute, dynamicIndex) in group.items"
-                :key="`dynamic-${dynamicIndex}`"
-                flat
-                :class="{
-                  'q-card-selected':
-                    selectedItem.attributes_selected[group.id]['selected'] ===
-                    dynamicAttribute,
-                  'no-pointer': dynamicAttributeDisabled[dynamicAttribute.id],
-                }"
-                bordered
-                class="q-ma-sm attribute-card"
-                @click="selectDynamicAttribute(group.id, dynamicAttribute)"
-              >
-                <q-card-section class="q-pa-none">
-                  <q-img
-                    :src="dynamicAttribute.image?.large_image ?? undefined"
-                    height="180px"
-                  ></q-img>
-                </q-card-section>
-                <q-card-section class="q-pa-sm q-d-flex flex-grow-1 row">
-                  <div class="text-body1 col-8">
-                    {{ dynamicAttribute.value }}
-                  </div>
-                  <div
-                    class="text-body1 text-bold text-center col-4 text-secondary"
-                  >
-                    <span
-                      v-if="
-                        dynamicAttribute.price &&
-                        parseFloat(dynamicAttribute.price) > 0
-                      "
-                    >
-                      ${{ dynamicAttribute.price }}
-                    </span>
-                  </div>
-                  <div
-                    class="col-12"
-                    v-if="
-                      dynamicAttribute.help_text &&
-                      !dynamicAttributeDisabled[dynamicAttribute.id]
+            <div class="q-mt-md row q-col-gutter-x-xl q-pa-md">
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <label class="text-subtitle2">Width</label>
+                <div class="row">
+                  <q-input
+                    class="text-body1 col"
+                    square
+                    outlined
+                    v-model="selectedItem.width_inch"
+                    ref="widthRef"
+                    suffix="in"
+                    type="number"
+                    @change="
+                      updateQueryParams('width', selectedItem.width_inch)
                     "
-                  >
-                    <q-btn
-                      outline
-                      icon="info"
-                      size="sm"
-                      dense
-                      color="light-blue-9"
-                    >
-                      Info
-                      <q-tooltip
-                        anchor="center right"
-                        self="center left"
-                        :offset="[10, 10]"
-                        class="text-body2"
-                      >
-                        {{ dynamicAttribute.help_text }}
-                      </q-tooltip>
-                    </q-btn>
-                  </div>
-                  <div
-                    class="col-12"
-                    v-if="
-                      dynamicAttribute.position_required &&
-                      selectedItem.attributes_selected[group.id]['selected'][
-                        'id'
-                      ] === dynamicAttribute.id
-                    "
-                  >
-                    <q-select
-                      class="q-my-sm"
-                      outlined
-                      v-model="
-                        selectedItem.attributes_selected[group.id]['selected'][
-                          'position'
-                        ]
-                      "
-                      :options="positions"
-                      option-value="id"
-                      dense
-                      color="secondary"
-                      option-label="name"
-                      label="Position"
-                      emit-value
-                      map-options
-                    />
-                  </div>
-                  <div v-if="dynamicAttribute.sub_items">
-                    <div
-                      v-for="subItem in dynamicAttribute.sub_items"
-                      :key="`sub-${subItem.id}`"
-                    >
-                      <q-radio
-                        v-if="!dynamicAttributeSubItemsDisabled[subItem.id]"
-                        v-model="subItems[dynamicAttribute.id]"
-                        :class="{
-                          'no-pointer1':
-                            selectedItem.attributes_selected[group.id][
-                              'selected'
-                            ] !== dynamicAttribute,
-                        }"
-                        @click="
-                          updatedSelectedSubItem(
-                            dynamicAttribute.id,
-                            subItem.id
-                          )
-                        "
-                        :disable="dynamicAttributeSubItemsDisabled[subItem.id]"
-                        :val="subItem.id"
-                        color="secondary"
-                        checked-icon="task_alt"
-                        unchecked-icon="panorama_fish_eye"
-                        >{{ subItem.name }}
-                        <span v-if="subItem.price"
-                          >(+${{ subItem.price }})</span
-                        ></q-radio
-                      >
-                    </div>
-                  </div>
-                </q-card-section>
-                <q-card-section class="q-pa-sm">
-                  <div
-                    class="col-12 unavailable-card"
-                    v-if="
-                      dynamicAttribute.help_text &&
-                      dynamicAttributeDisabled[dynamicAttribute.id]
-                    "
-                  >
-                    <q-icon name="warning" size="sm" />
-                    Unavailable<br />
-                    {{ dynamicAttribute.help_text }}
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-          </div>
-          <q-card style="width: 300px" v-else flat>
-            <q-skeleton height="200px" square />
-            <q-item>
-              <q-item-section>
-                <q-item-label>
-                  <q-skeleton type="text" />
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-card>
-        </div>
-        <!-- Bottom sections -->
-        <div class="q-d-flex q-flex-grow-1 row wrap justify-center q-pa-md">
-          <div class="col-xs-12 col-sm-12 col-xl-12 col-md-12">
-            <q-list>
-              <q-expansion-item
-                class="text-subtitle1 text-weight-medium"
-                expand-separator
-                v-if="productFabric"
-                label="Product Information"
-              >
-                <q-card flat>
-                  <q-card-section class="text-body1">
-                    <div>{{ productFabric.product?.long_description }}</div>
-                  </q-card-section>
-                </q-card>
-              </q-expansion-item>
-              <q-expansion-item
-                class="text-subtitle1 text-weight-medium q-mt-md"
-                expand-separator
-                label="Motorization"
-              >
-                <q-card flat>
-                  <q-card-section class="text-body1">
-                    <div>
-                      <p>
-                        Motorized blinds, also known as motorized shades or
-                        motorized window treatments, are window coverings that
-                        can be operated and controlled using an electric motor
-                        or a motorized system.
-                      </p>
-                      <p>
-                        Unlike traditional blinds that are manually adjusted
-                        using cords or wands, motorized blinds offer the
-                        convenience of remote control or automation.
-                      </p>
-                      <p>
-                        These blinds are typically equipped with a motorized
-                        mechanism that allows them to be raised, lowered, or
-                        tilted at the touch of a button on a remote control or
-                        through a smartphone app. Some advanced systems also
-                        offer integration with smart home platforms like Amazon
-                        Alexa, Google Assistant, or Apple HomeKit, enabling
-                        users to control their motorized blinds through voice
-                        commands or automated schedules.
-                      </p>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </q-expansion-item>
+                    :rules="inputRulesWidth"
+                  />
+                  <q-select
+                    class="col q-ml-sm text-body1"
+                    square
+                    outlined
+                    v-model="selectedItem.width_fraction"
+                    color="black"
+                    :options="inchOptions"
+                  />
+                </div>
+              </div>
 
-              <!-- <q-expansion-item
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <label class="text-subtitle2">Height</label>
+                <div class="row">
+                  <q-input
+                    class="text-body1 col"
+                    square
+                    outlined
+                    v-model="selectedItem.height_inch"
+                    ref="heightRef"
+                    suffix="in"
+                    type="number"
+                    @change="
+                      updateQueryParams('height', selectedItem.height_inch)
+                    "
+                    :rules="inputRulesHeight"
+                  />
+                  <q-select
+                    class="col q-ml-sm text-body1"
+                    square
+                    outlined
+                    v-model="selectedItem.height_fraction"
+                    color="black"
+                    :options="inchOptions"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="q-mt-sm column q-pa-sm"
+              v-for="(group, attributeName) in productGroups"
+              v-if="productGroups"
+              :key="attributeName"
+            >
+              <div class="text-h6 q-mt-md">
+                {{ attributeName }}
+                <q-btn
+                  outline
+                  round
+                  icon="info"
+                  size="sm"
+                  dense
+                  color="grey"
+                  v-if="group.helpText"
+                >
+                  <q-tooltip
+                    anchor="center right"
+                    self="center left"
+                    :offset="[10, 10]"
+                    class="text-body2"
+                  >
+                    {{ group.helpText }}
+                  </q-tooltip>
+                </q-btn>
+              </div>
+              <q-separator class="q-mt-md" />
+              <div
+                class="row"
+                :class="{ 'justify-center': $q.platform.is.mobile }"
+              >
+                <q-card
+                  v-for="(dynamicAttribute, dynamicIndex) in group.items"
+                  :key="`dynamic-${dynamicIndex}`"
+                  flat
+                  :class="{
+                    'q-card-selected':
+                      selectedItem.attributes_selected[group.id]['selected'] ===
+                      dynamicAttribute,
+                    'no-pointer': dynamicAttributeDisabled[dynamicAttribute.id],
+                  }"
+                  bordered
+                  class="q-ma-sm attribute-card"
+                  @click="selectDynamicAttribute(group.id, dynamicAttribute)"
+                >
+                  <q-card-section class="q-pa-none">
+                    <q-img
+                      :src="dynamicAttribute.image?.large_image ?? undefined"
+                      height="180px"
+                    ></q-img>
+                  </q-card-section>
+                  <q-card-section class="q-pa-sm q-d-flex flex-grow-1 row">
+                    <div class="text-body1 col-8">
+                      {{ dynamicAttribute.value }}
+                    </div>
+                    <div
+                      class="text-body1 text-bold text-center col-4 text-secondary"
+                    >
+                      <span
+                        v-if="
+                          dynamicAttribute.price &&
+                          parseFloat(dynamicAttribute.price) > 0
+                        "
+                      >
+                        ${{ dynamicAttribute.price }}
+                      </span>
+                    </div>
+                    <div
+                      class="col-12"
+                      v-if="
+                        dynamicAttribute.help_text &&
+                        !dynamicAttributeDisabled[dynamicAttribute.id]
+                      "
+                    >
+                      <q-btn
+                        outline
+                        icon="info"
+                        size="sm"
+                        dense
+                        color="light-blue-9"
+                      >
+                        Info
+                        <q-tooltip
+                          anchor="center right"
+                          self="center left"
+                          :offset="[10, 10]"
+                          class="text-body2"
+                        >
+                          {{ dynamicAttribute.help_text }}
+                        </q-tooltip>
+                      </q-btn>
+                    </div>
+                    <div
+                      class="col-12"
+                      v-if="
+                        dynamicAttribute.position_required &&
+                        selectedItem.attributes_selected[group.id]['selected'][
+                          'id'
+                        ] === dynamicAttribute.id
+                      "
+                    >
+                      <q-select
+                        class="q-my-sm"
+                        outlined
+                        v-model="
+                          selectedItem.attributes_selected[group.id][
+                            'selected'
+                          ]['position']
+                        "
+                        :options="positions"
+                        option-value="id"
+                        dense
+                        color="secondary"
+                        option-label="name"
+                        label="Position"
+                        emit-value
+                        map-options
+                      />
+                    </div>
+                    <div v-if="dynamicAttribute.sub_items">
+                      <div
+                        v-for="subItem in dynamicAttribute.sub_items"
+                        :key="`sub-${subItem.id}`"
+                      >
+                        <q-radio
+                          v-if="!dynamicAttributeSubItemsDisabled[subItem.id]"
+                          v-model="subItems[dynamicAttribute.id]"
+                          :class="{
+                            'no-pointer1':
+                              selectedItem.attributes_selected[group.id][
+                                'selected'
+                              ] !== dynamicAttribute,
+                          }"
+                          @click="
+                            updatedSelectedSubItem(
+                              dynamicAttribute.id,
+                              subItem.id
+                            )
+                          "
+                          :disable="
+                            dynamicAttributeSubItemsDisabled[subItem.id]
+                          "
+                          :val="subItem.id"
+                          color="secondary"
+                          checked-icon="task_alt"
+                          unchecked-icon="panorama_fish_eye"
+                          >{{ subItem.name }}
+                          <span v-if="subItem.price"
+                            >(+${{ subItem.price }})</span
+                          ></q-radio
+                        >
+                      </div>
+                    </div>
+                  </q-card-section>
+                  <q-card-section class="q-pa-sm">
+                    <div
+                      class="col-12 unavailable-card"
+                      v-if="
+                        dynamicAttribute.help_text &&
+                        dynamicAttributeDisabled[dynamicAttribute.id]
+                      "
+                    >
+                      <q-icon name="warning" size="sm" />
+                      Unavailable<br />
+                      {{ dynamicAttribute.help_text }}
+                    </div>
+                  </q-card-section>
+                </q-card>
+              </div>
+            </div>
+            <q-card style="width: 300px" v-else flat>
+              <q-skeleton height="200px" square />
+              <q-item>
+                <q-item-section>
+                  <q-item-label>
+                    <q-skeleton type="text" />
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-card>
+          </div>
+          <!-- Bottom sections -->
+          <div class="q-d-flex q-flex-grow-1 row wrap justify-center q-pa-md">
+            <div class="col-xs-12 col-sm-12 col-xl-12 col-md-12">
+              <q-list>
+                <q-expansion-item
+                  class="text-subtitle1 text-weight-medium"
+                  expand-separator
+                  v-if="productFabric"
+                  label="Product Information"
+                >
+                  <q-card flat>
+                    <q-card-section class="text-body1">
+                      <div>{{ productFabric.product?.long_description }}</div>
+                    </q-card-section>
+                  </q-card>
+                </q-expansion-item>
+                <q-expansion-item
+                  class="text-subtitle1 text-weight-medium q-mt-md"
+                  expand-separator
+                  label="Motorization"
+                >
+                  <q-card flat>
+                    <q-card-section class="text-body1">
+                      <div>
+                        <p>
+                          Motorized blinds, also known as motorized shades or
+                          motorized window treatments, are window coverings that
+                          can be operated and controlled using an electric motor
+                          or a motorized system.
+                        </p>
+                        <p>
+                          Unlike traditional blinds that are manually adjusted
+                          using cords or wands, motorized blinds offer the
+                          convenience of remote control or automation.
+                        </p>
+                        <p>
+                          These blinds are typically equipped with a motorized
+                          mechanism that allows them to be raised, lowered, or
+                          tilted at the touch of a button on a remote control or
+                          through a smartphone app. Some advanced systems also
+                          offer integration with smart home platforms like
+                          Amazon Alexa, Google Assistant, or Apple HomeKit,
+                          enabling users to control their motorized blinds
+                          through voice commands or automated schedules.
+                        </p>
+                      </div>
+                    </q-card-section>
+                  </q-card>
+                </q-expansion-item>
+
+                <!-- <q-expansion-item
                 class="text-subtitle1 text-weight-medium q-mt-md"
                 expand-separator
                 label="Reviews"
@@ -544,176 +573,178 @@
                   </q-card-section>
                 </q-card>
               </q-expansion-item> -->
-              <q-expansion-item
-                class="text-subtitle1 text-weight-medium q-mt-md"
-                expand-separator
-                label="Shipping & Production"
-              >
-                <q-card flat>
-                  <q-card-section class="text-body1">
-                    <div>
-                      <div class="q-mt-lg text-h6">Free shipping</div>
-                      <div class="q-mt-lg text-body1">
-                        You can set your mind at ease regarding shipping costs;
-                        we will take care of them for you. Our goal is to
-                        provide hassle-free logistics, and we'll make sure your
-                        blinds and shades are delivered right to your front
-                        door.
+                <q-expansion-item
+                  class="text-subtitle1 text-weight-medium q-mt-md"
+                  expand-separator
+                  label="Shipping & Production"
+                >
+                  <q-card flat>
+                    <q-card-section class="text-body1">
+                      <div>
+                        <div class="q-mt-lg text-h6">Free shipping</div>
+                        <div class="q-mt-lg text-body1">
+                          You can set your mind at ease regarding shipping
+                          costs; we will take care of them for you. Our goal is
+                          to provide hassle-free logistics, and we'll make sure
+                          your blinds and shades are delivered right to your
+                          front door.
+                        </div>
+                        <div class="q-mt-sm">
+                          <p class="q-pa-sm">
+                            <span class="para-start">Changes: </span> We allow
+                            changes to your order within a 24-hour window after
+                            your online order is finalized. This is because
+                            production typically begins shortly after your order
+                            is placed. The changes must be emailed to us within
+                            24-hour period.
+                          </p>
+                        </div>
+                        <div class="q-mt-sm">
+                          <p class="q-pa-sm">
+                            <span class="para-start">Cancellations: </span> If
+                            you decide to cancel your order within the initial
+                            24-hour period, we will provide a refund of your
+                            payment.
+                          </p>
+                        </div>
                       </div>
-                      <div class="q-mt-sm">
-                        <p class="q-pa-sm">
-                          <span class="para-start">Changes: </span> We allow
-                          changes to your order within a 24-hour window after
-                          your online order is finalized. This is because
-                          production typically begins shortly after your order
-                          is placed. The changes must be emailed to us within
-                          24-hour period.
+                    </q-card-section>
+                  </q-card>
+                </q-expansion-item>
+                <q-expansion-item
+                  class="text-subtitle1 text-weight-medium q-mt-md"
+                  expand-separator
+                  label="Measure & Install Guide"
+                >
+                  <q-card flat>
+                    <q-card-section class="text-body1">
+                      <div class="q-flex-grow-1">
+                        <p>
+                          Measuring accurately is crucial when it comes to
+                          installing blinds or shades.
                         </p>
-                      </div>
-                      <div class="q-mt-sm">
-                        <p class="q-pa-sm">
-                          <span class="para-start">Cancellations: </span> If you
-                          decide to cancel your order within the initial 24-hour
-                          period, we will provide a refund of your payment.
+                        <p>
+                          You can find more details measuring and installation
+                          in following links
                         </p>
+                        <ul class="q-px-lg">
+                          <li>
+                            <nuxt-link to="/customize/measuring-tips"
+                              >Measuring Tips</nuxt-link
+                            >
+                          </li>
+                          <li>
+                            <nuxt-link to="/customize/installation-guides"
+                              >Installation Guidelines</nuxt-link
+                            >
+                          </li>
+                        </ul>
                       </div>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </q-expansion-item>
-              <q-expansion-item
-                class="text-subtitle1 text-weight-medium q-mt-md"
-                expand-separator
-                label="Measure & Install Guide"
-              >
-                <q-card flat>
-                  <q-card-section class="text-body1">
-                    <div class="q-flex-grow-1">
-                      <p>
-                        Measuring accurately is crucial when it comes to
-                        installing blinds or shades.
-                      </p>
-                      <p>
-                        You can find more details measuring and installation in
-                        following links
-                      </p>
-                      <ul class="q-px-lg">
-                        <li>
-                          <nuxt-link to="/customize/measuring-tips"
-                            >Measuring Tips</nuxt-link
-                          >
-                        </li>
-                        <li>
-                          <nuxt-link to="/customize/installation-guides"
-                            >Installation Guidelines</nuxt-link
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                  </q-card-section>
-                </q-card>
-              </q-expansion-item>
-            </q-list>
+                    </q-card-section>
+                  </q-card>
+                </q-expansion-item>
+              </q-list>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <q-dialog v-model="missingOptionsDialog">
-      <q-card style="width: 70%">
-        <q-card-section>
-          <div class="text-h6">The following product options required</div>
-        </q-card-section>
-        <q-card-section class="q-px-md q-py-sm">
-          <div class="text-body1">
-            <ul class="q-my-none">
-              <li
-                v-for="(item, index) in optionsNotSelected"
-                :key="`item-${index}`"
-                class="text-secondary"
-              >
-                {{ item }}
-              </li>
-            </ul>
-          </div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Ok" @click="missingOptionsDialog = false" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="fullscreenDialog" maximized>
-      <div :class="{ 'full-screen': $q.platform.is.desktop }">
-        <q-carousel
-          swipeable
-          animated
-          ref="carousel"
-          infinite
-          v-model="slide"
-          :class="{ 'full-height': $q.platform.is.desktop }"
-        >
-          <q-carousel-slide
-            v-for="(image, index) in productImages"
-            :name="index"
-            ratio="1"
-            class="q-pa-none"
-          >
-            <div class="row fit justify-start no-wrap">
-              <q-img
-                class="col-12 full-height"
-                :src="image.large_image"
-                ratio="1"
-                fit="fill"
-              />
+      <q-dialog v-model="missingOptionsDialog">
+        <q-card :style="$q.platform.is.mobile ? 'width: 90%' : 'width: 70%'">
+          <q-card-section>
+            <div class="text-h6">The following product options required</div>
+          </q-card-section>
+          <q-card-section class="q-px-md q-py-sm">
+            <div class="text-body1">
+              <ul class="q-my-none">
+                <li
+                  v-for="(item, index) in optionsNotSelected"
+                  :key="`item-${index}`"
+                  class="text-secondary"
+                >
+                  {{ item }}
+                </li>
+              </ul>
             </div>
-          </q-carousel-slide>
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn flat label="Ok" @click="missingOptionsDialog = false" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
 
-          <template v-slot:control>
-            <q-carousel-control
-              position="top-right"
-              :offset="[18, 18]"
-              class="text-white rounded-borders"
-              style="background: rgba(0, 0, 0, 0.3); padding: 4px 8px"
+      <q-dialog v-model="fullscreenDialog" maximized>
+        <div :class="{ 'full-screen': $q.platform.is.desktop }">
+          <q-carousel
+            swipeable
+            animated
+            ref="carousel"
+            infinite
+            v-model="slide"
+            :class="{ 'full-height': $q.platform.is.desktop }"
+          >
+            <q-carousel-slide
+              v-for="(image, index) in productImages"
+              :name="index"
+              ratio="1"
+              class="q-pa-none"
             >
-              <q-btn
-                outline
-                round
-                color="primary"
-                icon="close"
-                @click="fullscreenDialog = false"
-              />
-            </q-carousel-control>
+              <div class="row fit justify-start no-wrap">
+                <q-img
+                  class="col-12 full-height"
+                  :src="image.large_image"
+                  ratio="1"
+                  fit="fill"
+                />
+              </div>
+            </q-carousel-slide>
 
-            <q-carousel-control
-              position="bottom-right"
-              :offset="[18, 18]"
-              class="q-gutter-xs"
-            >
-              <q-btn
-                push
-                round
-                dense
-                color="orange"
-                text-color="black"
-                icon="arrow_left"
-                @click="$refs.carousel.previous()"
-              />
-              <q-btn
-                push
-                round
-                dense
-                color="orange"
-                text-color="black"
-                icon="arrow_right"
-                @click="$refs.carousel.next()"
-              />
-            </q-carousel-control>
-          </template>
-        </q-carousel>
-      </div>
-    </q-dialog>
-  </q-page>
+            <template v-slot:control>
+              <q-carousel-control
+                position="top-right"
+                :offset="[18, 18]"
+                class="text-white rounded-borders"
+                style="background: rgba(0, 0, 0, 0.3); padding: 4px 8px"
+              >
+                <q-btn
+                  outline
+                  round
+                  color="primary"
+                  icon="close"
+                  @click="fullscreenDialog = false"
+                />
+              </q-carousel-control>
+
+              <q-carousel-control
+                position="bottom-right"
+                :offset="[18, 18]"
+                class="q-gutter-xs"
+              >
+                <q-btn
+                  push
+                  round
+                  dense
+                  color="orange"
+                  text-color="black"
+                  icon="arrow_left"
+                  @click="$refs.carousel.previous()"
+                />
+                <q-btn
+                  push
+                  round
+                  dense
+                  color="orange"
+                  text-color="black"
+                  icon="arrow_right"
+                  @click="$refs.carousel.next()"
+                />
+              </q-carousel-control>
+            </template>
+          </q-carousel>
+        </div>
+      </q-dialog>
+    </q-page>
+  </q-page-container>
 </template>
 
 <script lang="ts">
@@ -1602,8 +1633,7 @@ export default toNative(PublicProductDetailsPage);
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .height-prod-image {
-    height: 250px;
-    width: 250px;
+    width: 90%;
   }
 }
 

@@ -28,7 +28,7 @@
               </SingleCartItem>
             </div>
           </div>
-          <div class="col-lg-6 col-md-6 col-sm-12 q-pa-md text-body1">
+          <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 q-pa-md text-body1">
             <div class="q-flex-grow-1 text-h5 q-mb-sm">Order Summary</div>
             <q-separator />
             <div class="row q-pa-md">
@@ -109,7 +109,7 @@
       v-if="cartItems && cartItems.cartItems && cartItems.cartItems.length"
       class="q-d-flex q-flex-grow-1 column wrap justify-center q-px-md"
     >
-      <div class="col-sm-12 col-xl-10 col-md-12 col-xm-12">
+      <div class="col-sm-12 col-xl-10 col-md-12 col-sm-12 col-xs-12">
         <div class="text-h6 q-my-sm">Order Information</div>
         <q-separator />
         <q-list>

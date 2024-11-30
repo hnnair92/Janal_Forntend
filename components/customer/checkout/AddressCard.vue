@@ -69,7 +69,7 @@
     </div>
     <div v-else-if="edit && address">
       <div class="row q-pa-sm">
-        <div class="col">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
           <label class="text-weight-medium q-px-md"
             >First Name <span class="text-red">*</span></label
           >
@@ -82,7 +82,7 @@
             :rules="[(val) => !!val || 'Field is required']"
           />
         </div>
-        <div class="col">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
           <label class="text-weight-medium q-px-md"
             >Last Name <span class="text-red">*</span></label
           >
@@ -140,7 +140,7 @@
         </div>
       </div>
       <div class="row q-pa-sm">
-        <div class="col">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
           <label class="text-weight-medium q-px-md"
             >Province <span class="text-red">*</span></label
           >
@@ -158,7 +158,7 @@
             :rules="[(val: any) => !!val || 'Field is required']"
           />
         </div>
-        <div class="col">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
           <label class="text-weight-medium q-px-md"
             >Postal Code <span class="text-red">*</span></label
           >

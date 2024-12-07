@@ -31,7 +31,7 @@ const isArrayEqual =(A:Array<any>, B:Array<any>):boolean =>{
 const updateQuantity = (item:CartItem):boolean =>{
   const itemFound = state.cartItems.find((obj:CartItem)=> obj.fabric_id==item.fabric_id && obj.product==item.product && obj.height_inch==item.height_inch && obj.width_inch==item.width_inch)
   let isUpdated=false;
-  if(itemFound && itemFound.color && item.color && itemFound.color.id==item.color.id && isArrayEqual(item.attribute_values,itemFound.attribute_values)){
+  if(itemFound && itemFound.color && item.color && itemFound.color.id==item.color.id && item.attribute_values && itemFound.attribute_values && isArrayEqual(item.attribute_values,itemFound.attribute_values)){
     itemFound.quantity +=item.quantity;
     isUpdated=true;
   }

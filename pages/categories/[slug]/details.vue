@@ -762,7 +762,7 @@ import {
   DynamicAttributeValueSubItems,
 } from "@/openapi";
 import { Component, Vue, Watch, Setup, toNative } from "vue-facing-decorator";
-import { addToCart, initializeCart } from "@/store/cart";
+import { addToCart, initializeCart, totalCartQuantity } from "@/store/cart";
 import { addToWishlist, state, initializeWishList } from "@/store/wishlist";
 import Loading from "@/components/public/Loading.vue";
 import CartProductAdded from "@/components/common/CartProductAdded.vue";
@@ -1134,6 +1134,7 @@ export class PublicProductDetailsPage extends Vue {
       addToCart(this.selectedItem);
       this.loadingToCart = false;
       this.selectedItem.quantity = 1;
+      totalCartQuantity();
     }, 1000);
     //
   }

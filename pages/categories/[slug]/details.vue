@@ -1133,8 +1133,11 @@ export class PublicProductDetailsPage extends Vue {
       this.loadingMessage = "Added to cart!";
       addToCart(this.selectedItem);
       this.loadingToCart = false;
-      this.selectedItem.quantity = 1;
-      totalCartQuantity();
+      const newItem = {
+        ...this.selectedItem,
+        quantity: 1,
+      };
+      this.selectedItem = newItem;
     }, 1000);
     //
   }

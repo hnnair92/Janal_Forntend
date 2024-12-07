@@ -49,6 +49,7 @@ const clearCart = (): void => {
 
 const saveCart = (): void => {
   localStorage.setItem('cartItems', JSON.stringify(state.cartItems));
+  cartItemTotal();
 };
 
 const cartItemTotal = (): number => {

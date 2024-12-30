@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     public: {
       baseURL: process.env.API_BASE_URL,
       useProduction: process.env.PRODUCTION || false,
+      SENTRY_DSN: process.env.SENTRY_DSN,
     },
     turnstile: {
       secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY,
@@ -63,6 +64,7 @@ export default defineNuxtConfig({
     "nuxt-permissions",
     "dayjs-nuxt",
     "@nuxtjs/turnstile",
+    "@sentry/nuxt/module"
   ],
   turnstile: {
     siteKey: process.env.NUXT_TURNSTILE_SITE_KEY,

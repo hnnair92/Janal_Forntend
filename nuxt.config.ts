@@ -9,6 +9,8 @@ export default defineNuxtConfig({
       baseURL: process.env.API_BASE_URL,
       useProduction: process.env.PRODUCTION || false,
       SENTRY_DSN: process.env.SENTRY_DSN,
+      SENTRY_ENVIRONMENT: process.env.NODE_ENV || "development",
+      SENTRY_RELEASE: process.env.SENTRY_RELEASE,
     },
     turnstile: {
       secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY,

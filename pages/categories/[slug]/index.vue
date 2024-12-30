@@ -32,6 +32,7 @@
               :fit="$q.platform.is.desktop ? 'cover' : 'fill'"
             />
             <CountDownTimer
+              v-if="promotion.end_date"
               :dateTime.sync="promotion.end_date"
             ></CountDownTimer>
           </div>
